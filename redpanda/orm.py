@@ -3,7 +3,6 @@
 
 import pandas
 import sqlalchemy.orm
-from sqlalchemy.ext.declarative import declared_attr
 from . import dialects
 
 
@@ -13,16 +12,17 @@ START_EXCLUSIVE = 8
 END_EXCLUSIVE   = 16
 
 
-class RedPandaMixin(object):
-    """ Custom SQLAlchemy Base. """
-    index_col    = None
-    coerce_float = True
-    parse_dates  = None
-    columns      = None
-    chunksize    = None
+class RedPanda(object):
+    def __init__(self, ormcls, index_col=None, coerce_float=True, params=None,
+        parse_dates=None, columns=None, chunksize=None):
+        self.ormcls       = ormcls
+        self.index_col    = index_col
+        self.coerce_float = coerce_float
+        self.parse_dates  = parse_dates
+        self.columns      = columns
+        self.chunksize    = chunksize
 
-    @classmethod
-    def frame(cls, engine, query=None):
+    def frame(self, engine, query=None):
         """ Frame the results of a query in a pandas.DataFrame.
 
             Arguments:
@@ -31,51 +31,53 @@ class RedPandaMixin(object):
 
             Returns:
                 pandas.DataFrame of results. """
-        query       = query or sqlalchemy.orm.Query(cls)
+        query       = query or sqlalchemy.orm.Query(self.ormcls)
         sql, params = dialects.statement_and_params(engine, query)
         frame       = pandas.read_sql(
             sql          = str(sql),
             con          = engine,
-            index_col    = cls.index_col,
-            coerce_float = cls.coerce_float,
+            index_col    = self.index_col,
+            coerce_float = self.coerce_float,
             params       = params,
-            parse_dates  = cls.parse_dates,
-            columns      = cls.columns,
-            chunksize    = cls.chunksize )
+            parse_dates  = self.parse_dates,
+            columns      = self.columns,
+            chunksize    = self.chunksize )
         return frame
 
 
-class TimestampedMixin(RedPandaMixin):
-    """ Model that can be transformed into a pandas datetime-indexed row. """
-    timestamp_col = 'timestamp'
+class TimestampedRedPanda(RedPanda):
+    def __init__(self, ormcls, timestamp_col, index_col=None, coerce_float=True,
+        params=None, parse_dates=None, columns=None, chunksize=None):
+        super(TimestampedRedPanda, self).__init__(
+            ormcls, index_col, coerce_float, params, parse_dates, columns, chunksize)
+        self.timestamp_col = timestamp_col
 
-    @declared_attr
-    def timestamp(cls):
-        raise NotImplementedError(
-            "<TimestampedMixin> objects must define a 'timestamp' column or synonym")
+    @property
+    def timestamp(self):
+        try:
+            return self._timestamp
+        except AttributeError:
+            self._timestamp = getattr(self.ormcls, self.timestamp_col)
+            return self._timestamp
 
-
-    @classmethod
-    def query_between(cls, start, end, how=None, query=None):
-        query = query or sqlalchemy.orm.Query(cls)
+    def query_between(self, start, end, how=None, query=None):
+        query = query or sqlalchemy.orm.Query(self.ormcls)
 
         # Bound query
         if how is None or how == START_INCLUSIVE|END_INCLUSIVE:
-            query = query.filter(cls.timestamp>=start).filter(cls.timestamp<=end)
+            query = query.filter(self.timestamp>=start).filter(self.timestamp<=end)
         elif how == START_INCLUSIVE|END_EXCLUSIVE:
-            query = query.filter(cls.timestamp>=start).filter(cls.timestamp<end)
+            query = query.filter(self.timestamp>=start).filter(self.timestamp<end)
         elif how == START_EXCLUSIVE|END_INCLUSIVE:
-            query = query.filter(cls.timestamp>start).filter(cls.timestamp<=end)
+            query = query.filter(self.timestamp>start).filter(self.timestamp<=end)
         elif how == START_EXCLUSIVE|END_EXCLUSIVE:
-            query = query.filter(cls.timestamp>start).filter(cls.timestamp<end)
+            query = query.filter(self.timestamp>start).filter(self.timestamp<end)
         else:
             raise ValueError("how must be bitwise-or of start/end inclusive/exclusive constants")
 
         return query
 
-
-    @classmethod
-    def between(cls, engine, start, end, how=START_INCLUSIVE|END_INCLUSIVE, query=None):
+    def between(self, engine, start, end, how=START_INCLUSIVE|END_INCLUSIVE, query=None):
         """ Find records with <index_col> between start & end (end-inclusive by default)
             and return them as a DataFrame.
 
@@ -88,29 +90,37 @@ class TimestampedMixin(RedPandaMixin):
 
             Returns:
                 pandas.DataFrame of results. """
-        query = query or cls.query_between(start, end, how)
-        frame = cls.frame(engine, query).set_index(cls.timestamp_col)
+        query = query or self.query_between(start, end, how)
+        frame = self.frame(engine, query).set_index(self.ormcls.timestamp_col)
         return frame
 
 
-class PeriodicMixin(RedPandaMixin):
-    """ Model that can be transformed into a pandas period-indexed row. """
+class PeriodicRedPanda(RedPanda):
+    def __init__(self, ormcls, period_start_col, period_end_col, index_col=None,
+        coerce_float=True, params=None, parse_dates=None, columns=None, chunksize=None):
+        super(PeriodicRedPanda, self).__init__(
+            ormcls, index_col, coerce_float, params, parse_dates, columns, chunksize)
+        self.period_start_col = period_start_col
+        self.period_end_col   = period_end_col
 
-    @declared_attr
-    def period_start(cls):
-        raise NotImplementedError(
-            "<PeriodicMixin> objects must define 'period_start' column or synonym")
+    @property
+    def period_start(self):
+        try:
+            return self._period_start
+        except AttributeError:
+            self._period_start = getattr(self.ormcls, self.period_start_col)
+            return self._period_start
 
-    @declared_attr
-    def period_end(cls):
-        raise NotImplementedError(
-            "<PeriodicMixin> objects must define 'period_end' column or synonym")
+    @property
+    def period_end(self):
+        try:
+            return self._period_end
+        except AttributeError:
+            self._period_end = getattr(self.ormcls, self.period_end_col)
+            return self._period_end
 
-    @classmethod
-    def find_asof(cls, engine, timestamp, query=None):
-        """ Find records as of a given timestamp and return them as a DataFrame. """
-        query = (query or sqlalchemy.orm.Query(cls))\
-            .filter(cls.period_start<=timestamp)\
-            .filter((cls.period_end>timestamp)|(cls.period_end.is_(None)))
-
-        return cls.frame(engine, query)
+    def query_asof(self, timestamp, query=None):
+        query = query or sqlalchemy.orm.Query(self.ormcls)
+        query = query\
+            .filter(self.period_start<=timestamp)\
+            .filter((self.period_end>timestamp)|(self.period_end.is_(None)))
