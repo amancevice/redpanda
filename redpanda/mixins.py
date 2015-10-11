@@ -1,32 +1,29 @@
 """ RedPanda SQLAlchemy Mixins. """
 
-
-from sqlalchemy.ext.declarative import declared_attr
+import sqlalchemy
 from . import orm
+from . import utils
 
 
 class RedPandaMixin(object):
-    """ Basic RedPanda Mixin. Gives access to <Model>.redpanda.frame() """
+    """ Basic RedPanda Mixin. """
+    __redpanda__ = orm.RedPanda
+    __read_sql__ = {}
 
-    @declared_attr
-    def redpanda(cls):
-        return orm.RedPanda(cls)
+    @classmethod
+    def redpanda(cls, con, query=None, **read_sql):
+        """ Create RedPanda instance for SQLAlchemy object.
 
+            Arguments:
+                con         (sqlalchemy.engine.Engine): SQLAlchemy engine
+                query       (sqlalchemy.orm.Query):     Optional SQLAlchemy refinement query
+                read_sql    (dict):                     Arguments for pandas.read_sql()
 
-class TimestampedMixin(RedPandaMixin):
-    """ RedPanda Mixin for transforming datetime-indexable SQLAlchemy data. """
-    timestamp_col = 'timestamp'
-
-    @declared_attr
-    def redpanda(cls):
-        return orm.TimestampedRedPanda(cls, cls.timestamp_col)
-
-
-class PeriodicMixin(RedPandaMixin):
-    """ RedPanda Mixin for transforming period-indexable SQLAlchemy data. """
-    period_start_col = 'asof'
-    period_end_col   = 'until'
-
-    @declared_attr
-    def redpanda(cls):
-        return orm.PeriodicRedPanda(cls, cls.period_start_col, cls.period_end_col)
+            Returns:
+                RedPanda instance. """
+        # Use arg-provided or class-provided query
+        query = query or sqlalchemy.orm.Query(cls)
+        # Combine arg-provided and class-provided read_sql kwargs
+        read_sql = utils.dictcombine(cls.__read_sql__, read_sql)
+        # Return class-defined RedPanda helper
+        return cls.__redpanda__(cls, con, query, **read_sql)
