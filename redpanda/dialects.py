@@ -1,6 +1,9 @@
 """ Dialect parameter generators. """
 
 
+import sys
+
+
 def __default__(statement):
     """ Default parameter generator for SQLAlchemy statement. """
     return statement.params
@@ -9,6 +12,23 @@ def __default__(statement):
 def __sqlalchemy__dialects__mysql__mysqldb__MySQLDialect_mysqldb__(statement):
     """ MySQL parameter generator for SQLAlchemy statement. """
     return tuple(statement.params[k] for k in statement.positiontup)
+
+
+def __sqlalchemy__dialects__sqlite__pysqlite__SQLiteDialect_pysqlite__(statement):
+    """ SQLite3 parameter generator for SQLite3 statement. """
+    return tuple(statement.params[k] for k in statement.positiontup)
+
+
+def add(dialect, func):
+    """ Add a parameter generator for a given dialect class.
+
+        Arguments:
+            dialect (class):    SQLAlchemy dialect class
+            func    (lambda):   Function to process statement into params """
+    method = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
+    module = sys.modules[__name__]
+    setattr(module, method, func)
+    return func
 
 
 def params(engine, statement):

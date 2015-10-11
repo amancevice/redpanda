@@ -78,4 +78,4 @@ class RedPanda(object):
             query = self.query.filter(col>start).filter(col<end)
         else:
             raise ValueError("how must be bitwise-or of start/end inclusive/exclusive constants")
-        return type(self)(self.ormcls, self.engine, query)
+        return type(self)(self.ormcls, self.engine, query, **self.read_sql)
