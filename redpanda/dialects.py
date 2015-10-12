@@ -47,6 +47,7 @@ def params(engine, statement):
     generator = globals().get(method, __default__)
     return generator(statement)
 
+
 def statement(engine, query):
     """ Statement compiler for a given SQLAlchemy engine + query.
 
@@ -59,6 +60,7 @@ def statement(engine, query):
     statement = query.statement.compile(engine)
     statement.compile()
     return statement
+
 
 def statement_and_params(engine, query):
     """ Get compiled statement with params for a given SQLAlchemy engine + query
