@@ -24,11 +24,13 @@ def add(dialect, func):
 
         Arguments:
             dialect (class):    SQLAlchemy dialect class
-            func    (lambda):   Function to process statement into params """
+            func    (lambda):   Function to process statement into params
+
+        Returns:
+            The response of setattr()"""
     method = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
     module = sys.modules[__name__]
-    setattr(module, method, func)
-    return func
+    return setattr(module, method, func)
 
 
 def params(engine, statement):
@@ -62,8 +64,8 @@ def statement_and_params(engine, query):
     """ Get compiled statement with params for a given SQLAlchemy engine + query
 
         Arguments:
-            engine      (sqlalchemy.engine.Engine)  SQLAlchemy connection engine
-            statement   (sqlalchemy.dialect.?)      Compiled SQLAlchemy statement
+            engine  (sqlalchemy.engine.Engine)  SQLAlchemy connection engine
+            query   (sqlalchemy.orm.Query)      SQLAlchemy query
 
         Returns:
             Tuple of statement, params. """

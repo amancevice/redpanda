@@ -60,22 +60,25 @@ session.commit()
 
 # RedPanda Example usage
 widgets = Widget.redpanda(engine)
-frame   = widgets.frame()
+frame = widgets.frame()
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Limit results to November 2015
-timeboxed = Widget.redpanda(engine).between('timestamp', '2015-11-01', '2015-11-30')
-frame     = timeboxed.frame()
+query = sqlalchemy.orm.Query(Widget)\
+    .filter(Widget.timestamp>='2015-11-01')\
+    .filter(Widget.timestamp>='2015-11-30')
+timeboxed = Widget.redpanda(engine, query)
+frame = timeboxed.frame()
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Flatten table into the sum of units across timegroup vs. kind
-flattener = redpanda.utils.flatten(pandas.TimeGrouper('B'), 'kind', 'units', sum)
-frame     = Widget.redpanda(engine).frame(flattener).unstack().fillna(0)
-#        or Widget.redpanda(engine).frame(flattener, lambda x: x.unstack().fillna(0))
+frame = Widget.redpanda(engine).frame()\
+    .groupby([pandas.TimeGrouper("B"), "kind"]).units.sum()\
+    .unstack().fillna(0)
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"

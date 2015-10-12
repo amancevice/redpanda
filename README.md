@@ -100,22 +100,6 @@ Widget.redpanda(engine, query, index_col="id", parse_dates="timestamp")
 ```
 
 
-### Timeboxing Data
-
-RedPanda instances can further refine themselves using the `between()` method to limit query results by time:
-
-```python
-Widget.redpanda(engine).between(
-    "created_at", "2015-11-01", "2015-11-30", how="[)")
-```
-
-The above will add the filters `Widget.created_at>='2015-11-01'` and `Widget.created_at<'2015-11-30` to the default query. Notice the string `"[)"` is translated as `START_INCLUSIVE|END_EXCLUSIVE`. You can also use bitwise-or operations with the constants:
-* `redpanda.timebox.START_INCLUSIVE`
-* `redpanda.timebox.START_EXCLUSIVE`
-* `redpanda.timebox.END_INCLUSIVE`
-* `redpanda.timebox.END_EXCLUSIVE`
-
-
 ### Class Defaults
 
 You can further refine default behavior of the `redpanda` method on a per-class basis by defining class attributes:
