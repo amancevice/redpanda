@@ -55,20 +55,17 @@ redpanda.dialects.add(type(engine.dialect), func)
 
 ## Extended Use
 
-View [example.py](./example.py) for extended usage.
+View [example.py](./example.py) for extended usage examples.
 
 
-### Create SQLAlchemy Engine
+## RedPanda Declarative Mixin
+
+Use the `redpanda.minxins.RedPandaMixin` mixin to add redpanda to your declarative SQLAlchemy models.
 
 ```python
 # Create an in-memory SQLite database engine
 engine = sqlalchemy.create_engine("sqlite://", echo=True)
-```
 
-
-### Define Models
-
-```python
 # SQLAlchemy declarative base
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -82,32 +79,29 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
     units         = sqlalchemy.Column(sqlalchemy.Integer)
 ```
 
+## Mixin Customization
 
-## Accessing Data
+Add model-level behavior customization by overriding the default class attributes:
 
-The `redpanda()` class-method takes three arguments: a SQLAlchemy engine, an optional SQLAlchemy query, and optional keyword-arguments to be passed through to the `pandas.read_sql()` function. If omitted, the default query object is to select all from the model's table:
+
+#### \__redpanda__
+
+If you wish to use your own custom `RedPanda` class, you can override the `__redpanda__` class attribute:
 
 ```python
-# Default select-all
-Widget.redpanda(engine)
+class MyRedPanda(redpanda.orm.RedPanda):
+    # ... custom logic here
 
-# Custom query
-query = sqlalchemy.orm.Query(Widget).filter(Widget.kind=="fizzer")
-Widget.redpanda(engine, query)
-
-# Adding parse_sql() keyword-args
-Widget.redpanda(engine, query, index_col="id", parse_dates="timestamp")
+class Widget(redpanda.mixins.RedPandaMixin, Base):
+    # ... see above for full definition
+    __redpanda__ = MyRedPanda
 ```
 
 
-### Class Defaults
-
-You can further refine default behavior of the `redpanda` method on a per-class basis by defining class attributes:
-* `__redpanda__` defines the RedPanda class returned by the `redpanda()` class-method
-* `__read_sql__` is a dict of default values passed into `pandas.read_sql()`. These can be overriden at run-time.
-
-
 #### \__read_sql__
+
+Set the `__read_sql__` attribute to control the defualt behavior of `pandas.read_sql()`
+
 ```python
 class Widget(redpanda.mixins.RedPandaMixin, Base):
     # ... see above for full definition
@@ -120,12 +114,25 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
 ```
 
 
-#### \__redpanda__
-```python
-class MyRedPanda(redpanda.orm.RedPanda):
-    # ... overrides in here
+## Accessing Data
 
-class Widget(redpanda.mixins.RedPandaMixin, Base):
-    # ... see above for full definition
-    __redpanda__ = MyRedPanda
+The `redpanda()` class-method accepts the following arguments:
+* `engine`: A SQLAlchemy engine
+* `query`: An optional SQLAlchemy query to refine the data returned by the engine
+* `**read_sql`: An optional keyword-argument dict to be passed through to the `pandas.read_sql()` function. 
+
+If the `query` argument is omitted, the default behavior is to select the entire table.
+
+If the `**read_sql` keyword-argument dict is omitted the value is read from the class-attribute `__read_sql__` (which is empty by default).
+
+```python
+# Default select-all
+Widget.redpanda(engine)
+
+# Supply a custom query to refine data set
+query = sqlalchemy.orm.Query(Widget).filter(Widget.kind=="fizzer")
+Widget.redpanda(engine, query)
+
+# Supply **read_sql keyword-args to alter returned DataFrame
+Widget.redpanda(engine, query, index_col="id", parse_dates="timestamp")
 ```

@@ -2,6 +2,7 @@
 
 
 import pandas
+import sqlalchemy.orm
 from . import dialects
 from . import timebox
 from . import utils
@@ -13,23 +14,16 @@ class RedPanda(object):
         Arguments:
             ormcls      (object):                   SQLAlchemy parent model
             engine      (sqlalchemy.engine.Engine): SQLAlchemy engine
-            query       (sqlalchemy.orm.Query):     SQLAlchemy query
+            query       (sqlalchemy.orm.Query):     Optional SQLAlchemy refinement query
             read_sql    (dict):                     Arguments for pandas.read_sql() """
-    def __init__(self, ormcls, engine, query, **read_sql):
+    def __init__(self, ormcls, engine, query=None, **read_sql):
         self.ormcls   = ormcls
         self.engine   = engine
-        self.query    = query
+        self.query    = query or sqlalchemy.orm.Query(ormcls)
         self.read_sql = read_sql
 
     def frame(self, *transformations):
-        """ Transform into pandas.DataFrame instance.
-
-            Arguments:
-                transformations (tuple):    Transformation functions to apply to result
-
-            Returns:
-                pandas.DataFrame instance.
-            """
+        """ Return RedPanda pandas.DataFrame instance. """
         # Get engine-specific SQL and params
         sql, params = dialects.statement_and_params(self.engine, self.query)
         read_sql    = utils.dictcombine(self.read_sql, {'params' : params})
