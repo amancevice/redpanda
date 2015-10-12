@@ -3,8 +3,8 @@ import pandas
 import random
 import sqlalchemy
 import sqlalchemy.ext.declarative
+import random_words
 import redpanda.mixins
-from random_words import RandomWords
 
 # Create an in-memory SQLite engine
 engine = sqlalchemy.create_engine('sqlite://', echo=True)
@@ -16,7 +16,7 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 class Widget(redpanda.mixins.RedPandaMixin, Base):
     __tablename__ = 'widgets'
     id            = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    created_at    = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.utcnow)
+    timestamp     = sqlalchemy.Column(sqlalchemy.DateTime)
     name          = sqlalchemy.Column(sqlalchemy.String)
     kind          = sqlalchemy.Column(sqlalchemy.String)
     units         = sqlalchemy.Column(sqlalchemy.Integer)
@@ -24,8 +24,8 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
     # Class-defined RedPanda read_sql() arguments
     # This allows us to forego passing these into Widget.redpanda()
     __read_sql__ = {
-        'index_col'   : ['created_at'],
-        'parse_dates' : ['created_at'] }
+        'index_col'   : ['timestamp'],
+        'parse_dates' : ['timestamp'] }
 
 def randdate(maxday=31):
     """ Generate a random datetime. """
@@ -41,35 +41,42 @@ def randdate(maxday=31):
 
 def widgetgen():
     """ Generate a set of widgets. """
-    wordgen = RandomWords()
+    wordgen = random_words.RandomWords()
     kinds   = 'fizzer', 'buzzer', 'bopper'
     for i in range(0,25):
         for kind in kinds:
-            name       = wordgen.random_word()
-            created_at = randdate()
-            units      = random.randint(0,100)
-            yield Widget(created_at=created_at, name=name, kind=kind, units=units)
+            name      = wordgen.random_word()
+            timestamp = randdate()
+            units     = random.randint(0,100)
+            yield Widget(timestamp=timestamp, name=name, kind=kind, units=units)
 
 # Set up our database
 Base.metadata.create_all(engine)
 sessionmaker = sqlalchemy.orm.sessionmaker(bind=engine)
 sessiongen   = sqlalchemy.orm.scoped_session(sessionmaker)
 session      = sessiongen()
-map(session.add, sorted(widgetgen(), key=lambda x: x.created_at))
+map(session.add, sorted(widgetgen(), key=lambda x: x.timestamp))
 session.commit()
 
 # RedPanda Example usage
 widgets = Widget.redpanda(engine)
-widgets.frame()
+frame   = widgets.frame()
+print "\n\n" + "="*60 + "\n\n"
+print frame
+print "\n\n" + "="*60 + "\n\n"
 
+# Limit results to November 2015
+timeboxed = Widget.redpanda(engine).between('timestamp', '2015-11-01', '2015-11-30')
+frame     = timeboxed.frame()
+print "\n\n" + "="*60 + "\n\n"
+print frame
+print "\n\n" + "="*60 + "\n\n"
+
+# Flatten table into the sum of units across timegroup vs. kind
 flattener = redpanda.utils.flatten(pandas.TimeGrouper('B'), 'kind', 'units', sum)
-widgets.frame(flattener).unstack() # or widgets.frame(flattener, lambda x: x.unstack())
+frame     = Widget.redpanda(engine).frame(flattener).unstack().fillna(0)
+#        or Widget.redpanda(engine).frame(flattener, lambda x: x.unstack().fillna(0))
+print "\n\n" + "="*60 + "\n\n"
+print frame
+print "\n\n" + "="*60 + "\n\n"
 
-timeboxed = Widget.redpanda(engine).between('created_at', '2015-11-01', '2015-11-30')
-timeboxed.frame()
-timeboxed.frame(flattener).unstack()
-
-# Add your own SQLAlchemy dialect parameter adapter
-dialect = sqlalchemy.dialects.example.dialect.SomeDialect
-adapter = lambda statement: statement.params.items()
-redpanda.dialects.add(dialect, adapter)
