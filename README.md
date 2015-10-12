@@ -136,3 +136,23 @@ Widget.redpanda(engine, query)
 # Supply **read_sql keyword-args to alter returned DataFrame
 Widget.redpanda(engine, query, index_col="id", parse_dates="timestamp")
 ```
+
+
+## Parsing DataFrames as Models
+
+The `redparse()` class-method handles the reverse translation of a DataFrame into a collection of SQLAlchemy models.
+
+Use the `parse_index` flag to parse a named index as a model attribute:
+
+```python
+frame = pandas.DataFrame({
+    datetime.utcnow() : {"name" : "foo", "kind" : "fizzer", "units" : 10 },
+    datetime.utcnow() : {"name" : "goo", "kind" : "buzzer", "units" : 11 },
+    datetime.utcnow() : {"name" : "hoo", "kind" : "bopper", "units" : 12 }
+}).T
+frame.index.name = 'timestamp'
+
+widgetgen = Widget.redparse(frame, parse_index=True)
+for widget in widgetgen:
+    print widget
+```

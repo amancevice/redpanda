@@ -27,3 +27,20 @@ class RedPandaMixin(object):
         read_sql = utils.dictcombine(cls.__read_sql__, read_sql)
         # Return class-defined RedPanda helper
         return cls.__redpanda__(cls, con, query, **read_sql)
+
+    @classmethod
+    def redparse(cls, dataframe, parse_index):
+        """ Return a generator for SQLAlchemy models from a pandas.DataFrame.
+
+            Arguments:
+                dataframe   (pandas.DataFrame): pandas.DataFrame to parse
+                parse_index (boolean):          parse the index as a model attribute
+
+            Returns:
+                Generator of SQLAlchemy objects. """
+        for ix, row in dataframe.iterrows():
+            attrs = row.to_dict()
+            if parse_index is True:
+                assert dataframe.index.name is not None, "Cannot parse unnamed index"
+                attrs[dataframe.index.name] = ix
+            yield cls(**attrs)

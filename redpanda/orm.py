@@ -34,19 +34,3 @@ class RedPanda(object):
             dataframe = dataframe[self.read_sql['columns']]
         # Apply any transformations
         return reduce((lambda x, y: y(x)), transformations, dataframe)
-
-    def parse(self, dataframe, parse_index=False):
-        """ Generate list of SQLAlchemy objects from pandas.DataFrame.
-
-            Arguments:
-                dataframe   (pandas.DataFrame): pandas.DataFrame to parse
-                parse_index (boolean):          parse the index as a model attribute
-
-            Returns:
-                Generator of SQLAlchemy objects. """
-        for ix, row in dataframe.iterrows():
-            attrs = row.to_dict()
-            if parse_index is True:
-                assert dataframe.index.name is not None, "Cannot parse unnamed index"
-                attrs[dataframe.index.name] = ix
-            yield self.ormcls(**attrs)
