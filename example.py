@@ -27,6 +27,11 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
         'index_col'   : ['timestamp'],
         'parse_dates' : ['timestamp'] }
 
+    def __repr__(self):
+        return "<Widget id: %s timestamp: '%s' name: '%s' kind: '%s' units: %d>" % \
+            (self.id, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                self.name, self.kind, self.units)
+
 def randdate(maxday=31):
     """ Generate a random datetime. """
     year = 2015
@@ -59,8 +64,7 @@ map(session.add, sorted(widgetgen(), key=lambda x: x.timestamp))
 session.commit()
 
 # RedPanda Example usage
-widgets = Widget.redpanda(engine)
-frame = widgets.frame()
+frame = Widget.redpanda(engine).frame()
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
@@ -69,8 +73,7 @@ print "\n\n" + "="*60 + "\n\n"
 query = sqlalchemy.orm.Query(Widget)\
     .filter(Widget.timestamp>='2015-11-01')\
     .filter(Widget.timestamp>='2015-11-30')
-timeboxed = Widget.redpanda(engine, query)
-frame = timeboxed.frame()
+frame = Widget.redpanda(engine, query).frame()
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
@@ -83,3 +86,10 @@ print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
+# Parse dataframe back into models
+frame = Widget.redpanda(engine).frame()
+modlegen = Widget.redpanda(engine).parse(frame, parse_index=True)
+print "\n\n" + "="*60 + "\n\n"
+for model in modlegen:
+    print model
+print "\n\n" + "="*60 + "\n\n"
