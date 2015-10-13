@@ -31,6 +31,8 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: Utilities", ],
     install_requires     = [
+        "mock",
         "nose",
-        "mock" ],
+        "pandas>=0.14.0",
+        "sqlalchemy>0.7.10" ],
     test_suite           = "nose.collector" )
