@@ -1,5 +1,7 @@
 # RedPanda: Pandas & SQLAlchemy
 
+<img src=https://travis-ci.org/amancevice/redpanda.svg?branch=master>
+
 Two great tastes that taste great together.
 
 Use RedPanda to add simple pandas integration into your declarative models.
