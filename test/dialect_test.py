@@ -3,7 +3,6 @@
 
 import datetime
 import random
-import random_words
 import redpanda.dialects
 import redpanda.mixins
 import sqlalchemy
@@ -54,11 +53,10 @@ def setup():
 
     def widgetgen():
         """ Generate a set of widgets. """
-        wordgen = random_words.RandomWords()
         kinds   = 'fizzer', 'buzzer', 'bopper'
         for i in range(0,25):
             for kind in kinds:
-                name      = wordgen.random_word()
+                name      = "%s-%d" % (kind, i)
                 timestamp = randdate()
                 units     = random.randint(0,100)
                 yield Widget(timestamp=timestamp, name=name, kind=kind, units=units)
