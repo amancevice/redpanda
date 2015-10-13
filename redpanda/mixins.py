@@ -26,7 +26,7 @@ class RedPandaMixin(object):
         # Combine arg-provided and class-provided read_sql kwargs
         read_sql = utils.dictcombine(cls.__read_sql__, read_sql)
         # Return class-defined RedPanda helper
-        return cls.__redpanda__(cls, con, query, **read_sql)
+        return cls.__redpanda__(con, query, **read_sql)
 
     @classmethod
     def redparse(cls, dataframe, parse_index):

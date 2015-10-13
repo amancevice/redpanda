@@ -16,10 +16,9 @@ class RedPanda(object):
             engine      (sqlalchemy.engine.Engine): SQLAlchemy engine
             query       (sqlalchemy.orm.Query):     Optional SQLAlchemy refinement query
             read_sql    (dict):                     Arguments for pandas.read_sql() """
-    def __init__(self, ormcls, engine, query=None, **read_sql):
-        self.ormcls   = ormcls
+    def __init__(self, engine, query, **read_sql):
         self.engine   = engine
-        self.query    = query or sqlalchemy.orm.Query(ormcls)
+        self.query    = query
         self.read_sql = read_sql
 
     def frame(self, *transformations):
