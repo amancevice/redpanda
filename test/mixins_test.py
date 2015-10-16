@@ -77,41 +77,40 @@ def setup():
 
 
 def test_redpanda_customizer():
-    returned = Widget.redpanda(ENGINE)
+    returned = Widget.redpanda()
     assert_is_instance(returned, MyRedPanda)
 
 
-def test_read_sql_customizer():
-    returned = Widget.redpanda(ENGINE).read_sql
-    expected = Widget.__read_sql__
-    assert_equal(returned, expected)
+@mock.patch('pandas.read_sql')
+def test_read_sql_customizer(mock_read_sql):
+    Widget.redpanda().frame(ENGINE)
+    kwargs = Widget.__read_sql__
+    kwargs['params'] = None
+    sql = "SELECT widgets.id, widgets.timestamp, widgets.name, widgets.kind, widgets.units \n" +\
+        "FROM widgets"
+    mock_read_sql.assert_called_with(sql, ENGINE, **kwargs)
 
 
-def test_read_sql_argument_override():
-    returned = Widget.redpanda(ENGINE, index_col='foo').read_sql
-    expected = copy(Widget.__read_sql__)
-    expected['index_col'] = 'foo'
-    assert_equal(returned, expected)
-
+@mock.patch('pandas.read_sql')
+def test_read_sql_argument_override(mock_read_sql):
+    Widget.redpanda().frame(ENGINE, index_col='foo')
+    kwargs = copy(Widget.__read_sql__)
+    kwargs['index_col'] = 'foo'
+    kwargs['params']    = None
+    sql = "SELECT widgets.id, widgets.timestamp, widgets.name, widgets.kind, widgets.units \n" +\
+        "FROM widgets"
+    mock_read_sql.assert_called_with(sql, ENGINE, **kwargs)
 
 def test_redpanda():
-    returned = Widget.redpanda(ENGINE)
-    expected = MyRedPanda(ENGINE, sqlalchemy.orm.Query(Widget),
-        index_col=['timestamp'], parse_dates=['timestamp'])
-    assert_equal(returned.engine, expected.engine)
-    assert_equal(str(returned.query), str(expected.query))
-    assert_equal(returned.read_sql, expected.read_sql)
+    returned = Widget.redpanda()
+    expected = MyRedPanda(Widget, Widget)
+    assert_equal(str(returned), str(expected))
 
 
 def test_redpanda_with_query():
-    query    = sqlalchemy.orm.Query(Widget).filter(Widget.kind=='buzzer')
-    returned = Widget.redpanda(ENGINE, query)
-    expected = MyRedPanda(ENGINE, query,
-        index_col=['timestamp'], parse_dates=['timestamp'])
-    assert_equal(returned.engine, expected.engine)
-    assert_equal(str(returned.query), str(expected.query))
-    assert_equal(returned.read_sql, expected.read_sql)
-
+    returned = Widget.redpanda().filter(Widget.kind=='buzzer')
+    expected = MyRedPanda(Widget).filter(Widget.kind=='buzzer')
+    assert_equal(str(returned), str(expected))
 
 
 def test_redparse():

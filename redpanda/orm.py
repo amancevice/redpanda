@@ -2,32 +2,22 @@
 
 
 import pandas
+import sqlalchemy.orm
 from . import dialects
 from . import utils
 
 
-class RedPanda(object):
-    """ RedPanda pandas integration helper.
+class RedPanda(sqlalchemy.orm.Query):
+    def __init__(self, parent, entities=None, session=None):
+        super(RedPanda, self).__init__(entities or parent, session)
+        self._parent = parent
 
-        Arguments:
-            ormcls      (object):                   SQLAlchemy parent model
-            engine      (sqlalchemy.engine.Engine): SQLAlchemy engine
-            query       (sqlalchemy.orm.Query):     Optional SQLAlchemy refinement query
-            read_sql    (dict):                     Arguments for pandas.read_sql() """
-    def __init__(self, engine, query, **read_sql):
-        self.engine   = engine
-        self.query    = query
-        self.read_sql = read_sql
-
-    def frame(self, *transformations):
+    def frame(self, engine, **read_sql):
         """ Return RedPanda pandas.DataFrame instance. """
-        # Get engine-specific SQL and params
-        sql, params = dialects.statement_and_params(self.engine, self.query)
-        read_sql    = utils.dictcombine(self.read_sql, {'params' : params})
-        # Read SQL into DataFrame
-        dataframe   = pandas.read_sql(str(sql), self.engine, **read_sql)
-        # Mask columns
-        if self.read_sql.get('columns') is not None:
-            dataframe = dataframe[self.read_sql['columns']]
-        # Apply any transformations
-        return reduce((lambda x, y: y(x)), transformations, dataframe)
+        __read_sql__ = self._parent.__read_sql__
+        sql, params  = dialects.statement_and_params(engine, self)
+        read_sql     = utils.dictcombine(__read_sql__, {'params':params or None}, read_sql)
+        dataframe    = pandas.read_sql(str(sql), engine, **read_sql)
+        if read_sql.get('columns') is not None:
+            dataframe = dataframe[read_sql['columns']]
+        return dataframe
