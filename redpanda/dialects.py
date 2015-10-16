@@ -45,7 +45,7 @@ def params(engine, statement):
     dialect   = type(engine.dialect)
     method    = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
     generator = globals().get(method, __default__)
-    return generator(statement)
+    return generator(statement) or None
 
 
 def statement(engine, query):

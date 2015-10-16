@@ -8,7 +8,7 @@ Use RedPanda to add simple pandas integration into your declarative models.
 
 View [example.py](./example.py) for extended usage.
 
-*Last Updated: `0.0.1`*
+*Last Updated: `0.0.3`*
 
 
 ## Installation
@@ -23,22 +23,21 @@ pip install redpanda
 RedPanda wraps the `pandas.read_sql()` function into a dialect-agnostic class-method for declarative SQLAlchemy models. Use mixins to add the `redpanda()` and `redparse()` methods to your declarative model classes:
 
 ```python
-# Create an in-memory SQLite database engine
+import redpanda.mixins
+import sqlalchemy.orm, sqlalchemy.ext.declarative
+
+# Create an in-memory SQLite database engine and bind to RedPanda
 engine = sqlalchemy.create_engine("sqlite://", echo=True)
+redpanda.bind(engine)
 
-# SQLAlchemy declarative base
-Base = sqlalchemy.ext.declarative.declarative_base()
-
-class MyModel(redpanda.mixins.RedPandaMixin, Base):
-    # ...
-
-MyModel.redpanda(engine)
+# Call redpanda() to get a query-like object
+MyModel.redpanda()
 ```
 
 Use the resulting `RedPanda` instance to transform SQLAlchemy queries into DataFrames:
 
 ```python
-MyModel.redpanda(engine).frame()
+MyModel.redpanda().join(MyParent).filter(MyParent.my_attr=='my_val').frame()
 ```
 
 Or parse a DataFrame into SQLAlchemy model list-generator:
@@ -67,16 +66,9 @@ View [example.py](./example.py) for extended usage examples.
 
 ## RedPanda Declarative Mixin
 
-Use the `redpanda.minxins.RedPandaMixin` mixin to add RedPanda to your declarative SQLAlchemy models.
+Use the `redpanda.mixins.RedPandaMixin` mixin to add RedPanda to your declarative SQLAlchemy models.
 
 ```python
-# Create an in-memory SQLite database engine
-engine = sqlalchemy.create_engine("sqlite://", echo=True)
-
-# SQLAlchemy declarative base
-Base = sqlalchemy.ext.declarative.declarative_base()
-
-# Declare our model with mixin
 class Widget(redpanda.mixins.RedPandaMixin, Base):
     __tablename__ = "widgets"
     id            = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
@@ -102,12 +94,15 @@ class MyRedPanda(redpanda.orm.RedPanda):
 class Widget(redpanda.mixins.RedPandaMixin, Base):
     # ... see above for full definition
     __redpanda__ = MyRedPanda
+
+Widget.redpanda()
+# => <MyRedPanda>
 ```
 
 
 #### \__read_sql__
 
-Set the `__read_sql__` attribute to control the defualt arguments passed to `pandas.read_sql()`
+Set the `__read_sql__` attribute to control the defualt arguments for `frame()`, which are passed to `pandas.read_sql()`
 
 ```python
 class Widget(redpanda.mixins.RedPandaMixin, Base):
@@ -118,30 +113,33 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
     __read_sql__ = {
         "index_col"   : ["created_at"],
         "parse_dates" : ["created_at"] }
+
+Widget.redpanda().frame()
+# Same as Widget.redpanda().frame(index_col=["created_at"], parse_dates=["created_at"])
 ```
 
 
 ## Accessing Data
 
-The `redpanda()` class-method accepts the following arguments:
-* `engine`: A SQLAlchemy engine
-* `query`: An optional SQLAlchemy query to refine the data returned by the engine
-* `**read_sql`: An optional keyword-argument dict to be passed through to the `pandas.read_sql()` function. 
+The `redpanda()` class-method accepts the same arguments as a `sqlalchemy.orm.Query` object:
+* `entities` or the "select" portion of the query
+* `session` an optional session binding
 
-If the `query` argument is omitted, the default behavior is to select the entire table.
+If the `entities` argument is omitted, the default behavior is to select the entire table.
 
-If the `**read_sql` keyword-argument dict is omitted the value is read from the class-attribute `__read_sql__`.
+If the `**read_sql` keyword-argument dict is omitted from the `frame()` method, the values are taken from the model class-attribute `__read_sql__`.
 
 ```python
 # Default select-all
-Widget.redpanda(engine)
+Widget.redpanda()
 
-# Supply a custom query to refine data set
-query = sqlalchemy.orm.Query(Widget).filter(Widget.kind=="fizzer")
-Widget.redpanda(engine, query)
+# Refine data set
+Widget.redpanda([Widget, Joiner])\
+    .join(Joiner)
+    .filter(Widget.joiner_id==Joiner.id)
 
 # Supply **read_sql keyword-args to alter returned DataFrame
-Widget.redpanda(engine, query, index_col="id", parse_dates="timestamp")
+Widget.redpanda().frame(index_col="id", parse_dates="timestamp")
 ```
 
 
