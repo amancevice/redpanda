@@ -8,6 +8,21 @@ AUTHOR  = redpanda.__author__
 EMAIL   = redpanda.__email__
 DESC    = redpanda.__doc__
 
+CLASSIFIERS = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2.7",
+    "Topic :: Utilities", ]
+REQUIRES = [
+    "mock",
+    "nose",
+    "numpy>=1.9.2",
+    "pandas>=0.14.0",
+    "sqlalchemy>0.7.10" ]
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
@@ -22,17 +37,6 @@ setup(
     url                  = 'http://www.smallweirdnumber.com',
     description          = DESC,
     long_description     = read('README.md'),
-    classifiers          = [
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2.7",
-        "Topic :: Utilities", ],
-    install_requires     = [
-        "mock",
-        "nose",
-        "pandas>=0.14.0",
-        "sqlalchemy>0.7.10" ],
+    classifiers          = CLASSIFIERS,
+    install_requires     = REQUIRES,
     test_suite           = "nose.collector" )

@@ -1,6 +1,7 @@
 """ Custom ORM behavior. """
 
 
+import numpy
 import pandas
 import sqlalchemy.orm
 from . import dialects
@@ -21,4 +22,7 @@ class RedPanda(sqlalchemy.orm.Query):
         dataframe   = pandas.read_sql(str(sql), engine, **read_sql)
         if read_sql.get('columns') is not None:
             dataframe = dataframe[read_sql['columns']]
+        if read_sql.get('coerce_float') is not None:
+            coerce_float = read_sql.get('coerce_float')
+            dataframe[coerce_float] = dataframe[coerce_float].applymap(numpy.float)
         return dataframe
