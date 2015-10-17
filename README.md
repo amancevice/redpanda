@@ -8,7 +8,7 @@ Use RedPanda to add simple pandas integration into your declarative models.
 
 View [example.py](./example.py) for extended usage.
 
-*Last Updated: `0.0.3`*
+*Last Updated: `0.0.6`*
 
 
 ## Installation
