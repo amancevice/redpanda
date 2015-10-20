@@ -6,7 +6,6 @@ import pandas
 import sqlalchemy.orm
 from . import dialects
 from . import utils
-from . import engine as bind
 
 
 class RedPanda(sqlalchemy.orm.Query):
