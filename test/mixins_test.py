@@ -77,13 +77,13 @@ def setup():
 
 
 def test_redpanda_customizer():
-    returned = Widget.redpanda()
+    returned = Widget.redpanda(ENGINE)
     assert_is_instance(returned, MyRedPanda)
 
 
 @mock.patch('pandas.read_sql')
 def test_read_sql_customizer(mock_read_sql):
-    Widget.redpanda().frame(ENGINE)
+    Widget.redpanda(ENGINE).frame()
     kwargs = Widget.__read_sql__
     kwargs['params'] = None
     sql = "SELECT widgets.id, widgets.timestamp, widgets.name, widgets.kind, widgets.units \n" +\
@@ -93,7 +93,7 @@ def test_read_sql_customizer(mock_read_sql):
 
 @mock.patch('pandas.read_sql')
 def test_read_sql_argument_override(mock_read_sql):
-    Widget.redpanda().frame(ENGINE, index_col='foo')
+    Widget.redpanda(ENGINE).frame(index_col='foo')
     kwargs = copy(Widget.__read_sql__)
     kwargs['index_col'] = 'foo'
     kwargs['params']    = None
@@ -102,13 +102,13 @@ def test_read_sql_argument_override(mock_read_sql):
     mock_read_sql.assert_called_with(sql, ENGINE, **kwargs)
 
 def test_redpanda():
-    returned = Widget.redpanda()
-    expected = MyRedPanda(Widget, Widget)
+    returned = Widget.redpanda(ENGINE)
+    expected = MyRedPanda(Widget, engine=ENGINE)
     assert_equal(str(returned), str(expected))
 
 
 def test_redpanda_with_query():
-    returned = Widget.redpanda().filter(Widget.kind=='buzzer')
+    returned = Widget.redpanda(ENGINE).filter(Widget.kind=='buzzer')
     expected = MyRedPanda(Widget).filter(Widget.kind=='buzzer')
     assert_equal(str(returned), str(expected))
 

@@ -11,9 +11,9 @@ class RedPandaMixin(object):
     __read_sql__ = {}
 
     @classmethod
-    def redpanda(cls, entities=None, session=None):
+    def redpanda(cls, engine, entities=None, session=None):
         """ Create RedPanda object. """
-        return cls.__redpanda__(entities or cls, session, **cls.__read_sql__)
+        return cls.__redpanda__(entities or cls, session, engine, **cls.__read_sql__)
 
     @classmethod
     def redparse(cls, dataframe, parse_index=False):
