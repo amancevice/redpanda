@@ -2,7 +2,7 @@ import os
 from setuptools import setup
 
 NAME    = "redpanda"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 AUTHOR  = "amancevice"
 EMAIL   = "smallweirdnum@gmail.com"
 DESC    = "Pandas-ORM Integration."

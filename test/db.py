@@ -3,7 +3,6 @@
 
 import datetime
 import random
-import random_words
 import redpanda.mixins
 import sqlalchemy
 import sqlalchemy.ext.declarative

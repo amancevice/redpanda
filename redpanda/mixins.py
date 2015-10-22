@@ -13,7 +13,8 @@ class RedPandaMixin(object):
     @classmethod
     def redpanda(cls, entities=None, session=None):
         """ Create RedPanda object. """
-        return cls.__redpanda__(entities or cls, session, **cls.__read_sql__)
+        entities = cls if entities is None else entities
+        return cls.__redpanda__(entities, session, **cls.__read_sql__)
 
     @classmethod
     def redparse(cls, dataframe, parse_index=False):
