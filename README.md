@@ -8,7 +8,7 @@ Use RedPanda to add simple pandas integration into your declarative models.
 
 View [example.py](./example.py) for extended usage.
 
-*Last Updated: `0.0.6`*
+*Last Updated: `0.1.0`*
 
 
 ## Installation
@@ -26,9 +26,8 @@ RedPanda wraps the `pandas.read_sql()` function into a dialect-agnostic class-me
 import redpanda.mixins
 import sqlalchemy.orm, sqlalchemy.ext.declarative
 
-# Create an in-memory SQLite database engine and bind to RedPanda
+# Create an in-memory SQLite database engine
 engine = sqlalchemy.create_engine("sqlite://", echo=True)
-redpanda.bind(engine)
 
 # Call redpanda() to get a query-like object
 MyModel.redpanda()
@@ -37,7 +36,7 @@ MyModel.redpanda()
 Use the resulting `RedPanda` instance to transform SQLAlchemy queries into DataFrames:
 
 ```python
-MyModel.redpanda().join(MyParent).filter(MyParent.my_attr=='my_val').frame()
+MyModel.redpanda().join(MyParent).filter(MyParent.my_attr=='my_val').frame(engine)
 ```
 
 Or parse a DataFrame into SQLAlchemy model list-generator:
@@ -90,6 +89,7 @@ If you wish to use your own custom `RedPanda` class, you can override the `__red
 ```python
 class MyRedPanda(redpanda.orm.RedPanda):
     # ... custom logic here
+    pass
 
 class Widget(redpanda.mixins.RedPandaMixin, Base):
     # ... see above for full definition
@@ -114,7 +114,7 @@ class Widget(redpanda.mixins.RedPandaMixin, Base):
         "index_col"   : ["created_at"],
         "parse_dates" : ["created_at"] }
 
-Widget.redpanda().frame()
+Widget.redpanda().frame(engine)
 # Same as Widget.redpanda().frame(index_col=["created_at"], parse_dates=["created_at"])
 ```
 

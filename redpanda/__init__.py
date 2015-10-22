@@ -3,11 +3,12 @@
 
 __author__  = "amancevice"
 __email__   = "smallweirdnum@gmail.com"
-__version__ = "0.0.8"
+__version__ = "0.1.0"
 
 
+from . import orm
 
-def query(entities, engine=None, **read_sql):
+
+def query(entities, session=None, **read_sql):
     """ Construct RedPanda """
-    from . import orm
-    return orm.RedPanda(entities, engine=engine, **read_sql)
+    return orm.RedPanda(entities, session=session, **read_sql)

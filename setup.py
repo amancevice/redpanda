@@ -1,12 +1,11 @@
-import redpanda
 import os
 from setuptools import setup
 
-NAME    = redpanda.__name__
-VERSION = redpanda.__version__
-AUTHOR  = redpanda.__author__
-EMAIL   = redpanda.__email__
-DESC    = redpanda.__doc__
+NAME    = "redpanda"
+VERSION = "0.1.0"
+AUTHOR  = "amancevice"
+EMAIL   = "smallweirdnum@gmail.com"
+DESC    = "Pandas-ORM Integration."
 
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",

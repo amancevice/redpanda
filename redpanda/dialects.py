@@ -42,6 +42,7 @@ def params(engine, statement):
 
         Returns:
             Parameters in engine-specific format. """
+    assert engine is not None, "No engine supplied"
     dialect   = type(engine.dialect)
     method    = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
     generator = globals().get(method, __default__)

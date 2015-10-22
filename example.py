@@ -64,29 +64,28 @@ map(session.add, sorted(widgetgen(), key=lambda x: x.timestamp))
 session.commit()
 
 # RedPanda Example usage
-frame = Widget.redpanda(engine).frame()
+frame = Widget.redpanda().frame(engine)
 # redpanda.query(Widget, engine).frame()
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Use redpanda.query()
-frame = redpanda.query(Widget, engine).frame()
-# redpanda.query(Widget, engine).frame()
+frame = redpanda.query(Widget).frame(engine)
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Limit results to November 2015
-frame = Widget.redpanda(engine)\
+frame = Widget.redpanda()\
     .filter(Widget.timestamp.between('2015-11-01', '2015-11-30 23:59:59'))\
-    .frame()
+    .frame(engine)
 print "\n\n" + "="*60 + "\n\n"
 print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Flatten table into the sum of units across timegroup vs. kind
-frame = Widget.redpanda(engine).frame()\
+frame = Widget.redpanda().frame(engine)\
     .groupby([pandas.TimeGrouper("B"), "kind"]).units.sum()\
     .unstack().fillna(0)
 print "\n\n" + "="*60 + "\n\n"
@@ -94,7 +93,7 @@ print frame
 print "\n\n" + "="*60 + "\n\n"
 
 # Parse dataframe back into models
-frame = Widget.redpanda(engine).frame()
+frame = Widget.redpanda().frame(engine)
 modlegen = Widget.redparse(frame, parse_index=True)
 print "\n\n" + "="*60 + "\n\n"
 for model in modlegen:
