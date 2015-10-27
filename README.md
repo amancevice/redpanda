@@ -1,6 +1,6 @@
 # RedPanda: Pandas & SQLAlchemy
 
-<img src=https://travis-ci.org/amancevice/redpanda.svg?branch=master/>
+<img src="https://travis-ci.org/amancevice/redpanda.svg?branch=master"/>
 
 Two great tastes that taste great together.
 
