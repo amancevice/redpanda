@@ -60,7 +60,7 @@ Base.metadata.create_all(engine)
 sessionmaker = sqlalchemy.orm.sessionmaker(bind=engine)
 sessiongen   = sqlalchemy.orm.scoped_session(sessionmaker)
 session      = sessiongen()
-map(session.add, sorted(widgetgen(), key=lambda x: x.timestamp))
+session.add_all(sorted(widgetgen(), key=lambda x: x.timestamp))
 session.commit()
 
 # RedPanda Example usage
