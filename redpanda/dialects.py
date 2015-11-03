@@ -2,6 +2,8 @@
 
 
 import sys
+from datetime import date
+from datetime import datetime
 
 
 def __default__(statement):
@@ -16,7 +18,14 @@ def __sqlalchemy__dialects__mysql__mysqldb__MySQLDialect_mysqldb__(statement):
 
 def __sqlalchemy__dialects__sqlite__pysqlite__SQLiteDialect_pysqlite__(statement):
     """ SQLite3 parameter generator for SQLite3 statement. """
-    return tuple(statement.params[k] for k in statement.positiontup)
+    def iterhelper(params, positiontup):
+        for key in positiontup:
+            # SQLite seems to dislike datetime
+            if isinstance(params[key], datetime) or isinstance(params[key], date):
+                yield str(params[key])
+            else:
+                yield params[key]
+    return tuple(iterhelper(statement.params, statement.positiontup))
 
 
 def add(dialect, func):
