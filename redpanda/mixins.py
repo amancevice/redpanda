@@ -27,7 +27,7 @@ class RedPandaMixin(object):
             Returns:
                 Generator of SQLAlchemy objects. """
         for ix, row in dataframe.iterrows():
-            attrs = row.to_dict()
+            attrs = row.dropna().to_dict()
             if parse_index is True:
                 assert dataframe.index.name is not None, "Cannot parse unnamed index"
                 attrs[dataframe.index.name] = ix

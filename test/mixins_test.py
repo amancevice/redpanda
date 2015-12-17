@@ -3,6 +3,7 @@
 
 import datetime
 import mock
+import numpy
 import pandas
 from copy import copy
 from nose.tools import assert_equal
@@ -52,11 +53,12 @@ def test_redparse():
     frame = pandas.DataFrame({
         datetime.datetime.utcnow() : {"name" : "foo", "kind" : "fizzer", "units" : 10 },
         datetime.datetime.utcnow() : {"name" : "goo", "kind" : "buzzer", "units" : 11 },
-        datetime.datetime.utcnow() : {"name" : "hoo", "kind" : "bopper", "units" : 12 }
+        datetime.datetime.utcnow() : {"name" : "hoo", "kind" : "bopper", "units" : 12 },
+        datetime.datetime.utcnow() : {"name" : "ioo", "kind" : "fopper", "units" : numpy.nan },
     }).T
     frame.index.name = 'timestamp'
 
-    widget1, widget2, widget3 = list(db.Widget.redparse(frame, parse_index=True))
+    widget1, widget2, widget3, widget4 = list(db.Widget.redparse(frame, parse_index=True))
     assert_equal(widget1.name, 'foo')
     assert_equal(widget1.kind, 'fizzer')
     assert_equal(widget1.units, 10)
@@ -66,6 +68,9 @@ def test_redparse():
     assert_equal(widget3.name, 'hoo')
     assert_equal(widget3.kind, 'bopper')
     assert_equal(widget3.units, 12)
+    assert_equal(widget4.name, 'ioo')
+    assert_equal(widget4.kind, 'fopper')
+    assert_equal(widget4.units, None)
 
 
 @raises(AssertionError)
