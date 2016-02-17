@@ -6,7 +6,7 @@ Two great tastes that taste great together.
 
 Use RedPanda to add simple pandas integration into your declarative models.
 
-View [example.py](./example.py) for extended usage.
+View [example.py](./example.py) or [example.ipynb](./example.ipynb) for extended usage.
 
 *Last Updated: `0.1.4`*
 
