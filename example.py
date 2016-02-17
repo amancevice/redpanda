@@ -94,8 +94,8 @@ print "\n\n" + "="*60 + "\n\n"
 
 # Parse dataframe back into models
 frame = Widget.redpanda().frame(engine)
-modlegen = Widget.redparse(frame, parse_index=True)
+modelgen = Widget.redparse(frame, parse_index=True)
 print "\n\n" + "="*60 + "\n\n"
-for model in modlegen:
+for model in modelgen:
     print model
 print "\n\n" + "="*60 + "\n\n"
