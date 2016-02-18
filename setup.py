@@ -16,11 +16,10 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 2.7",
     "Topic :: Utilities", ]
 REQUIRES = [
-    "mock",
-    "nose",
-    "numpy>=1.9.2",
-    "pandas>=0.14.0",
-    "sqlalchemy>0.7.10" ]
+    "pandas>=0.16.0",
+    "sqlalchemy>=1.0.0" ]
+TEST_REQUIRES = ["mock", "nose"]
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -38,4 +37,5 @@ setup(
     long_description     = read('README.md'),
     classifiers          = CLASSIFIERS,
     install_requires     = REQUIRES,
+    TEST_REQUIRES        = TEST_REQUIRES,
     test_suite           = "nose.collector" )
