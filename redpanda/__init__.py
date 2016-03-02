@@ -3,7 +3,7 @@
 
 __author__  = "amancevice"
 __email__   = "smallweirdnum@gmail.com"
-__version__ = "0.1.3"
+__version__ = "0.1.5"
 
 
 from . import orm

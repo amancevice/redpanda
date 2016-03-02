@@ -1,8 +1,8 @@
 import os
+import re
 from setuptools import setup
 
 NAME    = "redpanda"
-VERSION = "0.1.4"
 AUTHOR  = "amancevice"
 EMAIL   = "smallweirdnum@gmail.com"
 DESC    = "Pandas-ORM Integration."
@@ -24,9 +24,14 @@ TEST_REQUIRES = ["mock", "nose"]
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+def version():
+    search = r"^__version__ *= *['\"]([0-9.]+)['\"]"
+    initpy = read("./%s/__init__.py" % NAME)
+    return re.search(search, initpy, re.MULTILINE).group(1)
+
 setup(
     name                 = NAME,
-    version              = VERSION,
+    version              = version(),
     author               = AUTHOR,
     author_email         = EMAIL,
     packages             = [ NAME ],
