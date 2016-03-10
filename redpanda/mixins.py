@@ -1,8 +1,7 @@
 """ RedPanda SQLAlchemy Mixins. """
 
-import sqlalchemy
+
 from . import orm
-from . import utils
 
 
 class RedPandaMixin(object):
@@ -26,9 +25,9 @@ class RedPandaMixin(object):
 
             Returns:
                 Generator of SQLAlchemy objects. """
-        for ix, row in dataframe.iterrows():
+        for idx, row in dataframe.iterrows():
             attrs = row.dropna().to_dict()
             if parse_index is True:
                 assert dataframe.index.name is not None, "Cannot parse unnamed index"
-                attrs[dataframe.index.name] = ix
+                attrs[dataframe.index.name] = idx
             yield cls(**attrs)

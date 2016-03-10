@@ -1,14 +1,13 @@
 # RedPanda: Pandas & SQLAlchemy
 
-<img src="https://travis-ci.org/amancevice/redpanda.svg?branch=master"/>
+[![Build Status](https://travis-ci.org/amancevice/redpanda.svg?branch=master)](https://travis-ci.org/amancevice/redpanda)
+[![PyPI version](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
 
 Two great tastes that taste great together.
 
 Use RedPanda to add simple pandas integration into your declarative models.
 
-View [example.py](./example.py) or [example.ipynb](./example.ipynb) for extended usage.
-
-*Last Updated: `0.1.4`*
+View [example.py](./example/example.py) or [example.ipynb](./example/example.ipynb) for extended usage.
 
 
 ## Installation
@@ -60,7 +59,7 @@ redpanda.dialects.add(type(engine.dialect), func)
 
 ## Extended Use
 
-View [example.py](./example.py) for extended usage examples.
+View [example.py](./example/example.py) for extended usage examples.
 
 
 ## RedPanda Declarative Mixin

@@ -26,8 +26,8 @@ def test_sqlite():
         .filter(db.Widget.units>10)
     statement = query.statement.compile(db.ENGINE)
     statement.compile()
-    returned = redpanda.dialects\
-        .__sqlalchemy__dialects__sqlite__pysqlite__SQLiteDialect_pysqlite__(statement)
+    returned = redpanda.dialects.__dialects__\
+        ["sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"](statement)
     expected = 'fizzer', 10
     assert_equal(returned, expected)
 
@@ -38,8 +38,8 @@ def test_mysql():
         .filter(db.Widget.units>10)
     statement = query.statement.compile(db.ENGINE)
     statement.compile()
-    returned = redpanda.dialects\
-        .__sqlalchemy__dialects__mysql__mysqldb__MySQLDialect_mysqldb__(statement)
+    returned = redpanda.dialects.__dialects__\
+        ["sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb"](statement)
     expected = 'fizzer', 10
     assert_equal(returned, expected)
 
@@ -50,7 +50,8 @@ def test_add():
     def test_func(statement):
         return 'foo', 'bar'
     redpanda.dialects.add(TestDialect, test_func)
-    returned = redpanda.dialects.__test__dialect_test__TestDialect__(None)
+    returned = redpanda.dialects.__dialects__\
+        ["test.dialect_test.TestDialect"](None)
     expected = 'foo', 'bar'
     assert_equal(returned, expected)
 

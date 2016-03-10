@@ -1,31 +1,36 @@
 """ Dialect parameter generators. """
 
 
-import sys
 from datetime import date
 from datetime import datetime
 
 
-def __default__(statement):
+def __default__(stmt):
     """ Default parameter generator for SQLAlchemy statement. """
-    return statement.params
+    return stmt.params
 
 
-def __sqlalchemy__dialects__mysql__mysqldb__MySQLDialect_mysqldb__(statement):
+def __mysql__(stmt):
     """ MySQL parameter generator for SQLAlchemy statement. """
-    return tuple(statement.params[k] for k in statement.positiontup)
+    return tuple(stmt.params[k] for k in stmt.positiontup)
 
 
-def __sqlalchemy__dialects__sqlite__pysqlite__SQLiteDialect_pysqlite__(statement):
+def __sqlite__(stmt):
     """ SQLite3 parameter generator for SQLite3 statement. """
-    def iterhelper(params, positiontup):
+    def iterhelper(args, positiontup):
+        """ Helper for params. """
         for key in positiontup:
             # SQLite seems to dislike datetime
-            if isinstance(params[key], datetime) or isinstance(params[key], date):
-                yield str(params[key])
+            if isinstance(args[key], datetime) or isinstance(args[key], date):
+                yield str(args[key])
             else:
-                yield params[key]
-    return tuple(iterhelper(statement.params, statement.positiontup))
+                yield args[key]
+    return tuple(iterhelper(stmt.params, stmt.positiontup))
+
+
+__dialects__ = {
+    "sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb": __mysql__,
+    "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite": __sqlite__}
 
 
 def add(dialect, func):
@@ -34,28 +39,25 @@ def add(dialect, func):
         Arguments:
             dialect (class):    SQLAlchemy dialect class
             func    (lambda):   Function to process statement into params
-
-        Returns:
-            The response of setattr()"""
-    method = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
-    module = sys.modules[__name__]
-    return setattr(module, method, func)
+    """
+    key = "%s.%s" % (dialect.__module__, dialect.__name__)
+    __dialects__[key] = func
 
 
-def params(engine, statement):
+def params(engine, stmt):
     """ Parameter generator for a given SQLAlchemy engine + statement.
 
         Arguments:
-            engine      (sqlalchemy.engine.Engine)  SQLAlchemy connection engine
-            statement   (sqlalchemy.dialect.?)      Compiled SQLAlchemy statement
+            engine (sqlalchemy.engine.Engine)  SQLAlchemy connection engine
+            stmt   (sqlalchemy.dialect.?)      Compiled SQLAlchemy statement
 
         Returns:
             Parameters in engine-specific format. """
     assert engine is not None, "No engine supplied"
-    dialect   = type(engine.dialect)
-    method    = '__'.join([''] + dialect.__module__.split('.') + [dialect.__name__, ''])
-    generator = globals().get(method, __default__)
-    return generator(statement) or None
+    dialect = type(engine.dialect)
+    key = "%s.%s" % (dialect.__module__, dialect.__name__)
+    generator = __dialects__.get(key, __default__)
+    return generator(stmt) or None
 
 
 def statement(engine, query):
@@ -67,9 +69,9 @@ def statement(engine, query):
 
         Returns:
             Compiled engine-specific statement. """
-    statement = query.statement.compile(engine)
-    statement.compile()
-    return statement
+    stmt = query.statement.compile(engine)
+    stmt.compile()
+    return stmt
 
 
 def statement_and_params(engine, query):

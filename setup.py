@@ -18,7 +18,7 @@ CLASSIFIERS = [
 REQUIRES = [
     "pandas>=0.16.0",
     "sqlalchemy>=1.0.0" ]
-TEST_REQUIRES = ["mock", "nose"]
+TESTS_REQUIRE = ["mock", "nose"]
 
 
 def read(fname):
@@ -42,5 +42,5 @@ setup(
     long_description     = read('README.md'),
     classifiers          = CLASSIFIERS,
     install_requires     = REQUIRES,
-    TEST_REQUIRES        = TEST_REQUIRES,
+    tests_require        = TESTS_REQUIRE,
     test_suite           = "nose.collector" )
