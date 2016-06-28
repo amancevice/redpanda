@@ -1,12 +1,10 @@
 language: python
-sudo: true
 python:
 - '2.7'
-virtualenv:
-  system_site_packages: true
-before_install:
-- sudo apt-get update
-- sudo apt-get install python-pandas
+addons:
+  apt:
+    packages:
+    - python-pandas
 install:
 - pip install .
 - pip install tox
