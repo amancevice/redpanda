@@ -2,24 +2,22 @@ import os
 import re
 from setuptools import setup
 
-NAME    = "redpanda"
-AUTHOR  = "amancevice"
-EMAIL   = "smallweirdnum@gmail.com"
-DESC    = "Pandas-ORM Integration."
-
+NAME        = "redpanda"
+AUTHOR      = "amancevice"
+EMAIL       = "smallweirdnum@gmail.com"
+DESC        = "Pandas-ORM Integration."
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "Intended Audience :: System Administrators",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 2.7",
-    "Topic :: Utilities", ]
-REQUIRES = [
-    "pandas>=0.16.0",
-    "sqlalchemy>=1.0.0" ]
-TESTS_REQUIRE = ["mock", "nose"]
-
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python"]
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -34,13 +32,12 @@ setup(
     version              = version(),
     author               = AUTHOR,
     author_email         = EMAIL,
-    packages             = [ NAME ],
-    package_data         = { "%s" % NAME : ['README.md'] },
+    packages             = [NAME],
+    package_data         = {NAME: ["README.md"]},
     include_package_data = True,
-    url                  = 'http://www.smallweirdnumber.com',
+    url                  = "http://www.smallweirdnumber.com",
     description          = DESC,
-    long_description     = read('README.md'),
+    long_description     = read("README.md"),
     classifiers          = CLASSIFIERS,
-    install_requires     = REQUIRES,
-    tests_require        = TESTS_REQUIRE,
-    test_suite           = "nose.collector" )
+    install_requires     = ["pandas>=0.16.0", "sqlalchemy>=1.0.0"],
+    test_suite           = "nose.collector")
