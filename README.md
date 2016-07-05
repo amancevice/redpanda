@@ -7,8 +7,6 @@ Two great tastes that taste great together.
 
 Use RedPanda to add simple pandas integration into your declarative models.
 
-View [example.py](./example/example.py) or [example.ipynb](./example/example.ipynb) for extended usage.
-
 
 ## Installation
 
@@ -19,144 +17,53 @@ pip install redpanda
 
 ## Basic Use
 
-RedPanda wraps the `pandas.read_sql()` function into a dialect-agnostic class-method for declarative SQLAlchemy models. Use mixins to add the `redpanda()` and `redparse()` methods to your declarative model classes:
+Create a session from a SQLAlchemy engine:
 
 ```python
-import redpanda.mixins
-import sqlalchemy.orm, sqlalchemy.ext.declarative
+import redpanda
 
-# Create an in-memory SQLite database engine
-engine = sqlalchemy.create_engine("sqlite://", echo=True)
+engine = redpanda.create_engine("sqlite://")
+# => Engine(sqlite://)
 
-# Call redpanda() to get a query-like object
-MyModel.redpanda()
-```
-
-Use the resulting `RedPanda` instance to transform SQLAlchemy queries into DataFrames:
-
-```python
-MyModel.redpanda().join(MyParent).filter(MyParent.my_attr=='my_val').frame(engine)
-```
-
-Or parse a DataFrame into SQLAlchemy model list-generator:
-
-```python
-for model in MyModel.redparse(frame):
-    print model
+session = redpanda.Session(bind=engine)
+# => <sqlalchemy.orm.session.Session>
 ```
 
 
-## Dialects
+## Querying
 
-While the arguments to `pandas.read_sql()` are dialect-dependent, RedPanda is intended to be completely dialect-agnostic. RedPanda supports some SQLAlchemy dialects out of the box (MySQL, Postgres, and SQLite are supported). You can add support for other dialects by constructing a function to extract a parameter data-struct (eg, tuple, dict) from a compiled query statement:
+Use the `frame()` method of RedPanda queries to return a DataFrame representation of the results instead of a collection of models.
 
 ```python
-engine = sqlalchemy.create_engine("example://host/db")
-func   = lambda statement: statement.params.items()
-redpanda.dialects.add(type(engine.dialect), func)
+query = session.query(MyModel)
+# => <redpanda.orm.Query>
+
+query.frame()
+# => <pandas.DataFrame>
 ```
 
 
-## Extended Use
+### Querying with Filters
 
-View [example.py](./example/example.py) for extended usage examples.
-
-
-## RedPanda Declarative Mixin
-
-Use the `redpanda.mixins.RedPandaMixin` mixin to add RedPanda to your declarative SQLAlchemy models.
+The `frame()` method that wraps the `pandas.read_sql()` function into a dialect-agnostic class-method for declarative SQLAlchemy models and can accept the same keyword arguments as `pandas.read_sql()`:
 
 ```python
-class Widget(redpanda.mixins.RedPandaMixin, Base):
-    __tablename__ = "widgets"
-    id            = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    timestamp     = sqlalchemy.Column(sqlalchemy.DateTime)
-    name          = sqlalchemy.Column(sqlalchemy.String)
-    kind          = sqlalchemy.Column(sqlalchemy.String)
-    units         = sqlalchemy.Column(sqlalchemy.Integer)
-```
+query = session.query(MyModel).filter(MyModel.my_attr=="my_val")
 
-## Mixin Customization
-
-Add customization at the model-level by overriding the default class attributes:
-
-
-#### \__redpanda__
-
-If you wish to use your own custom `RedPanda` class, you can override the `__redpanda__` class attribute:
-
-```python
-class MyRedPanda(redpanda.orm.RedPanda):
-    # ... custom logic here
-    pass
-
-class Widget(redpanda.mixins.RedPandaMixin, Base):
-    # ... see above for full definition
-    __redpanda__ = MyRedPanda
-
-Widget.redpanda()
-# => <MyRedPanda>
+query.frame(index_col="time")
 ```
 
 
-#### \__read_sql__
+## More Examples
 
-Set the `__read_sql__` attribute to control the defualt arguments for `frame()`, which are passed to `pandas.read_sql()`
+See the IPython Notebooks in the [`examples`](./examples) directory for examples using [`Python 2.7`](./examples/python27/notebook.ipynb) and [`Python 3.5`](./examples/python35/notebook.ipynb)
 
-```python
-class Widget(redpanda.mixins.RedPandaMixin, Base):
-    # ... see above for full definition
+Additionally, if you have `docker-compose` installed you may view these notebooks directly by cloning this repo and starting the containers:
 
-    # Class-defined RedPanda read_sql() arguments
-    # This allows us to forego passing these into Widget.redpanda()
-    __read_sql__ = {
-        "index_col"   : ["created_at"],
-        "parse_dates" : ["created_at"] }
-
-Widget.redpanda().frame(engine)
-# Same as Widget.redpanda().frame(index_col=["created_at"], parse_dates=["created_at"])
+```bash
+git clone git@github.com:amancevice/redpanda.git
+cd redpanda
+docker-compose up
 ```
 
-
-## Accessing Data
-
-The `redpanda()` class-method accepts the same arguments as a `sqlalchemy.orm.Query` object:
-* `entities` or the "select" portion of the query
-* `session` an optional session binding
-
-If the `entities` argument is omitted, the default behavior is to select the entire table.
-
-If the `**read_sql` keyword-argument dict is omitted from the `frame()` method, the values are taken from the model class-attribute `__read_sql__`.
-
-```python
-# Default select-all
-Widget.redpanda()
-
-# Refine data set
-Widget.redpanda([Widget, Joiner])\
-    .join(Joiner)
-    .filter(Widget.joiner_id==Joiner.id)
-
-# Supply **read_sql keyword-args to alter returned DataFrame
-Widget.redpanda().frame(index_col="id", parse_dates="timestamp")
-```
-
-
-## Parsing DataFrames as Models
-
-The `redparse()` class-method handles the reverse translation of a DataFrame into a collection of SQLAlchemy models.
-
-Use the `parse_index` flag to parse a named index as a model attribute:
-
-```python
-frame = pandas.DataFrame({
-    datetime.utcnow() : {"name" : "foo", "kind" : "fizzer", "units" : 10 },
-    datetime.utcnow() : {"name" : "goo", "kind" : "buzzer", "units" : 11 },
-    datetime.utcnow() : {"name" : "hoo", "kind" : "bopper", "units" : 12 }
-}).T
-frame.index.name = 'timestamp'
-
-widgetgen = Widget.redparse(frame, parse_index=True)
-for widget in widgetgen:
-    print widget
-```
+Navigate to [http://localhost:2700](http://localhost:2700/tree) to view the `Python 2.7` notebook, or [http://localhost:3500](http://localhost:3500/tree) for `Python 3.5`.
