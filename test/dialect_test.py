@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import psycopg2
 
 
 ENGINE = redpanda.create_engine("sqlite://")
-SESSION = redpanda.Session(bind=ENGINE)
+SESSION = redpanda.orm.sessionmaker(bind=ENGINE)()
 create_widgets(SESSION)
 
 

@@ -15,7 +15,7 @@ from redpanda.example import Widget, create_widgets
 
 
 ENGINE = redpanda.create_engine("sqlite://")
-SESSION = redpanda.Session(bind=ENGINE)
+SESSION = redpanda.orm.sessionmaker(bind=ENGINE)()
 create_widgets(SESSION)
 
 
@@ -81,7 +81,7 @@ def test_add_dataframe():
 
     engine = redpanda.create_engine("sqlite://", convert_unicode=True)
     Widget.metadata.create_all(engine)
-    session = redpanda.orm.Session(bind=engine)
+    session = redpanda.orm.sessionmaker(bind=engine)()
     session.add_dataframe(Widget, frame, parse_index=True)
     session.commit()
 

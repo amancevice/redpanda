@@ -35,7 +35,7 @@ class Query(sqlalchemy.orm.Query):
         return dataframe
 
 
-class _Session(sqlalchemy.orm.Session):
+class Session(sqlalchemy.orm.Session):
     """ RedPanda SQLAlchemy Session.
 
         Adds add_dataframe() method to session to parse a DataFrame into models.
@@ -46,7 +46,7 @@ class _Session(sqlalchemy.orm.Session):
                 kwargs.setdefault("read_sql", entities[0].__read_sql__)
             except AttributeError:
                 pass
-        return super(_Session, self).query(*entities, **kwargs)
+        return super(Session, self).query(*entities, **kwargs)
 
     def add_dataframe(self, cls, dataframe, parse_index=False):
         """ Return a generator for SQLAlchemy models from a pandas.DataFrame.
@@ -68,10 +68,6 @@ class _Session(sqlalchemy.orm.Session):
             self.add(cls(**attrs))
 
 
-def sessionmaker(class_=_Session, query_cls=Query, **kwargs):
+def sessionmaker(class_=Session, query_cls=Query, **kwargs):
     """ Override of sqlalchemy.orm.sessionmaker to use RedPanda Session/Query. """
     return sqlalchemy.orm.sessionmaker(class_=class_, query_cls=query_cls, **kwargs)
-
-
-# pylint: disable=invalid-name
-Session = sessionmaker()
