@@ -68,11 +68,9 @@ class _Session(sqlalchemy.orm.Session):
             self.add(cls(**attrs))
 
 
-def sessionmaker(*args, **kwargs):
+def sessionmaker(class_=_Session, query_cls=Query, **kwargs):
     """ Override of sqlalchemy.orm.sessionmaker to use RedPanda Session/Query. """
-    kwargs.setdefault("query_cls", Query)
-    kwargs.setdefault("class_", _Session)
-    return sqlalchemy.orm.sessionmaker(*args, **kwargs)
+    return sqlalchemy.orm.sessionmaker(class_=class_, query_cls=query_cls, **kwargs)
 
 
 # pylint: disable=invalid-name
