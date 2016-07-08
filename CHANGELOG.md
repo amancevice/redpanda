@@ -1,1 +1,0 @@
-# RedPanda Changelog
