@@ -13,7 +13,10 @@ class Query(sqlalchemy.orm.Query):
     """
     def __init__(self, entities, session=None, read_sql=None):
         super(Query, self).__init__(entities, session)
-        self._read_sql = read_sql
+        try:
+            self._read_sql = read_sql or sqlalchemy.util.to_list(entities)[0].__read_sql__
+        except AttributeError:
+            self._read_sql = read_sql
 
     def frame(self, **read_sql):
         """ Return RedPanda pandas.DataFrame instance. """
@@ -40,14 +43,6 @@ class Session(sqlalchemy.orm.Session):
 
         Adds add_dataframe() method to session to parse a DataFrame into models.
     """
-    def query(self, *entities, **kwargs):
-        if len(entities) == 1:
-            try:
-                kwargs.setdefault("read_sql", entities[0].__read_sql__)
-            except AttributeError:
-                pass
-        return super(Session, self).query(*entities, **kwargs)
-
     def add_dataframe(self, cls, dataframe, parse_index=False):
         """ Return a generator for SQLAlchemy models from a pandas.DataFrame.
 
