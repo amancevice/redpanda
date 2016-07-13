@@ -19,12 +19,9 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python"]
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
 def version():
     search = r"^__version__ *= *['\"]([0-9.]+)['\"]"
-    initpy = read("./%s/__init__.py" % NAME)
+    initpy = open("./redpanda/__init__.py").read()
     return re.search(search, initpy, re.MULTILINE).group(1)
 
 setup(
@@ -37,7 +34,7 @@ setup(
     include_package_data = True,
     url                  = "http://www.smallweirdnumber.com",
     description          = DESC,
-    long_description     = read("README.md"),
+    long_description     = open("./README.md").read(),
     classifiers          = CLASSIFIERS,
     install_requires     = ["pandas>=0.16.0", "sqlalchemy>=1.0.0"],
     test_suite           = "nose.collector")
