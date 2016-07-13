@@ -48,7 +48,7 @@ query.frame()
 The `frame()` method that wraps the `pandas.read_sql()` function into a dialect-agnostic class-method for declarative SQLAlchemy models and can accept the same keyword arguments as `pandas.read_sql()`:
 
 ```python
-query = session.query(MyModel).filter(MyModel.my_attr=="my_val")
+query = session.query(MyModel).filter_by(my_attr="my_val")
 
 query.frame(index_col="time")
 ```
