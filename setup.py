@@ -2,10 +2,12 @@ import os
 import re
 from setuptools import setup
 
-NAME        = "redpanda"
-AUTHOR      = "amancevice"
-EMAIL       = "smallweirdnum@gmail.com"
-DESC        = "Pandas-ORM Integration."
+NAME   = "redpanda"
+AUTHOR = "amancevice"
+EMAIL  = "smallweirdnum@gmail.com"
+DESC   = "Pandas-ORM Integration."
+LONG   = """See GitHub_ for documentation.
+.. _GitHub: https://github.com/amancevice/redpanda"""
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -34,7 +36,7 @@ setup(
     include_package_data = True,
     url                  = "http://www.smallweirdnumber.com",
     description          = DESC,
-    long_description     = open("./README.md").read(),
+    long_description     = LONG,
     classifiers          = CLASSIFIERS,
     install_requires     = ["pandas>=0.16.0", "sqlalchemy>=1.0.0"],
     test_suite           = "nose.collector")
