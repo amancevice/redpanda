@@ -17,6 +17,8 @@ class Query(sqlalchemy.orm.Query):
             self._read_sql = read_sql or sqlalchemy.util.to_list(entities)[0].__read_sql__
         except AttributeError:
             self._read_sql = read_sql
+        except IndexError:
+            self._read_sql = read_sql
 
     def frame(self, **read_sql):
         """ Return RedPanda pandas.DataFrame instance. """
