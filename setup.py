@@ -27,16 +27,14 @@ def version():
     return re.search(search, initpy, re.MULTILINE).group(1)
 
 setup(
-    name                 = NAME,
-    version              = version(),
-    author               = AUTHOR,
-    author_email         = EMAIL,
-    packages             = [NAME],
-    package_data         = {NAME: ["README.md"]},
-    include_package_data = True,
-    url                  = "http://www.smallweirdnumber.com",
-    description          = DESC,
-    long_description     = LONG,
-    classifiers          = CLASSIFIERS,
-    install_requires     = ["pandas>=0.16.0", "sqlalchemy>=1.0.0"],
-    test_suite           = "nose.collector")
+    name             = NAME,
+    version          = version(),
+    author           = AUTHOR,
+    author_email     = EMAIL,
+    packages         = [NAME],
+    url              = "http://www.smallweirdnumber.com",
+    description      = DESC,
+    long_description = LONG,
+    classifiers      = CLASSIFIERS,
+    install_requires = ["pandas>=0.16.0", "sqlalchemy>=1.0.0"],
+    test_suite       = "nose.collector")
