@@ -5,7 +5,7 @@ python:
 - '3.3'
 - '3.4'
 - '3.5'
-install: pip install . mock nose pylint RandomWords codecov
+install: pip install . codecov mock nose pylint RandomWords
 script:
 - nosetests --with-coverage
 - pylint redpanda
