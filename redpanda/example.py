@@ -5,7 +5,6 @@ from datetime import datetime
 
 import random_words
 import sqlalchemy.ext.declarative
-from . import orm
 
 
 # pylint: disable=invalid-name
