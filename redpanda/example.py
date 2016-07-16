@@ -47,11 +47,8 @@ def widgetgen(maxiter=25):
         yield Widget(timestamp=randtime(), name=name, kind=kind, units=units)
 
 
-def create_widgets(session=None):
+def create_widgets(session):
     """ Create all in engine. """
-    if session is None:
-        engine = sqlalchemy.create_engine("sqlite://", echo=True)
-        session = orm.Session(bind=engine)
     Base.metadata.create_all(session.bind)
     session.add_all(sorted(widgetgen(), key=lambda x: x.timestamp))
     session.commit()
