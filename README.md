@@ -1,8 +1,8 @@
 # RedPanda: Pandas & SQLAlchemy
 
 [![build](https://travis-ci.org/amancevice/redpanda.svg?branch=master)](https://travis-ci.org/amancevice/redpanda)
-[![pypi](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
 [![codecov](https://codecov.io/gh/amancevice/redpanda/branch/master/graph/badge.svg)](https://codecov.io/gh/amancevice/redpanda)
+[![pypi](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
 
 Two great tastes that taste great together.
 
