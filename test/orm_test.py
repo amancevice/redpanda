@@ -7,6 +7,7 @@ from copy import copy
 import mock
 import pandas
 import redpanda
+import sqlalchemy
 from nose.tools import assert_equal
 from nose.tools import assert_is_instance
 from nose.tools import raises
@@ -16,6 +17,24 @@ from redpanda.example import Widget, create_widgets
 
 ENGINE = redpanda.create_engine("sqlite://")
 SESSION = redpanda.orm.sessionmaker(bind=ENGINE)()
+
+
+class NoReadSql(redpanda.example.Base):
+    """ Declare an example model. """
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    __tablename__ = "no_read_sql"
+
+
+class HasColumns(redpanda.example.Base):
+    """ Declare an example model. """
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    fizz = sqlalchemy.Column(sqlalchemy.Integer)
+    buzz = sqlalchemy.Column(sqlalchemy.TIMESTAMP)
+    __tablename__ = "has_columns"
+    __read_sql__ = {"columns": ["name", "fizz", "buzz"]}
+
+
 create_widgets(SESSION)
 
 
@@ -27,6 +46,25 @@ def test_query():
         "widgets.units AS widgets_units \n" \
         "FROM widgets"
     assert_equal(returned, expected)
+
+
+def test_query_no_entities():
+    returned = SESSION.query()._read_sql
+    expected = {}
+    assert_equal(returned, expected)
+
+
+def test_query_no_read_sql():
+    returned = SESSION.query(NoReadSql)._read_sql
+    expected = {}
+    assert_equal(returned, expected)
+
+
+def test_frame_columns():
+    returned = SESSION.query(HasColumns).frame().columns
+    expected = HasColumns.__read_sql__["columns"]
+    assert (returned == expected).all()
+
 
 
 @raises(AttributeError)
