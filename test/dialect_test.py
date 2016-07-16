@@ -17,8 +17,8 @@ create_widgets(SESSION)
 
 def test_default():
     query = sqlalchemy.orm.Query(Widget)\
-        .filter(Widget.kind=='fizzer')\
-        .filter(Widget.units>10)
+        .filter(Widget.kind == 'fizzer')\
+        .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
     statement.compile()
     returned = redpanda.dialects._default(statement)
@@ -28,36 +28,39 @@ def test_default():
 
 def test_sqlite():
     query = sqlalchemy.orm.Query(Widget)\
-        .filter(Widget.kind=='fizzer')\
-        .filter(Widget.units>10)
+        .filter(Widget.kind == 'fizzer')\
+        .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
     statement.compile()
-    returned = redpanda.dialects.__dialects__\
-        ["sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"](statement)
+    dialect = "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"
+    returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = 'fizzer', 10
     assert_equal(returned, expected)
 
 
 def test_mysql():
     query = sqlalchemy.orm.Query(Widget)\
-        .filter(Widget.kind=='fizzer')\
-        .filter(Widget.units>10)
+        .filter(Widget.kind == 'fizzer')\
+        .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
     statement.compile()
-    returned = redpanda.dialects.__dialects__\
-        ["sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb"](statement)
+    dialect = "sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb"
+    returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = 'fizzer', 10
     assert_equal(returned, expected)
 
 
 def test_add():
+
     class TestDialect(object):
         pass
+
     def test_func(statement):
         return 'foo', 'bar'
+
     redpanda.dialects.add(TestDialect, test_func)
-    returned = redpanda.dialects.__dialects__\
-        ["test.dialect_test.TestDialect"](None)
+    dialect = "test.dialect_test.TestDialect"
+    returned = redpanda.dialects.__dialects__[dialect](None)
     expected = 'foo', 'bar'
     assert_equal(returned, expected)
 
@@ -65,8 +68,9 @@ def test_add():
 @mock.patch('sqlalchemy.engine.base.Engine')
 @mock.patch('sqlalchemy.sql.compiler.Compiled')
 def test_params_mysql(mock_statement, mock_engine):
-    mock_engine.dialect = sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb()
-    mock_statement.params = {'param1' : 'val1', 'param2' : 'val2'}
+    mock_engine.dialect = \
+        sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb()
+    mock_statement.params = {'param1': 'val1', 'param2': 'val2'}
     mock_statement.positiontup = ('param1', 'param2')
     returned = redpanda.dialects.params(mock_engine, mock_statement)
     expected = 'val1', 'val2'
@@ -76,8 +80,9 @@ def test_params_mysql(mock_statement, mock_engine):
 @mock.patch('sqlalchemy.engine.base.Engine')
 @mock.patch('sqlalchemy.sql.compiler.Compiled')
 def test_params_sqlite(mock_statement, mock_engine):
-    mock_engine.dialect = sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite()
-    mock_statement.params = {'param1' : 'val1', 'param2' : 'val2'}
+    mock_engine.dialect = \
+        sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite()
+    mock_statement.params = {'param1': 'val1', 'param2': 'val2'}
     mock_statement.positiontup = ('param1', 'param2')
     returned = redpanda.dialects.params(mock_engine, mock_statement)
     expected = 'val1', 'val2'
@@ -87,8 +92,9 @@ def test_params_sqlite(mock_statement, mock_engine):
 @mock.patch('sqlalchemy.engine.base.Engine')
 @mock.patch('sqlalchemy.sql.compiler.Compiled')
 def test_params_postgres(mock_statement, mock_engine):
-    mock_engine.dialect = sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2()
-    mock_statement.params = {'param1' : 'val1', 'param2' : 'val2'}
+    mock_engine.dialect = \
+        sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2()
+    mock_statement.params = {'param1': 'val1', 'param2': 'val2'}
     returned = redpanda.dialects.params(mock_engine, mock_statement)
-    expected = {'param1' : 'val1', 'param2' : 'val2'}
+    expected = {'param1': 'val1', 'param2': 'val2'}
     assert_equal(returned, expected)

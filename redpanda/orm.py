@@ -4,6 +4,7 @@
 import pandas
 import sqlalchemy.orm
 from . import dialects
+from . import utils
 
 
 class Query(sqlalchemy.orm.Query):
@@ -14,11 +15,12 @@ class Query(sqlalchemy.orm.Query):
     def __init__(self, entities, session=None, read_sql=None):
         super(Query, self).__init__(entities, session)
         try:
-            self._read_sql = read_sql or sqlalchemy.util.to_list(entities)[0].__read_sql__
+            self._read_sql = read_sql \
+                or sqlalchemy.util.to_list(entities)[0].__read_sql__
         except AttributeError:
-            self._read_sql = read_sql
+            self._read_sql = read_sql or {}
         except IndexError:
-            self._read_sql = read_sql
+            self._read_sql = read_sql or {}
 
     def frame(self, **read_sql):
         """ Return RedPanda pandas.DataFrame instance. """
@@ -30,8 +32,8 @@ class Query(sqlalchemy.orm.Query):
         sql, params = dialects.statement_and_params(conn.engine, self)
 
         # Get read_sql arguments
-        dictcombine = lambda *x: {k: v for d in x for k, v in d.items()}
-        read_sql = dictcombine(self._read_sql or {}, {"params":params}, read_sql)
+        read_sql = utils.dictcombine(
+            self._read_sql, {"params": params}, read_sql)
 
         # Read SQL into DataFrame
         dataframe = pandas.read_sql(str(sql), conn.engine, **read_sql)
@@ -43,7 +45,7 @@ class Query(sqlalchemy.orm.Query):
 class Session(sqlalchemy.orm.Session):
     """ RedPanda SQLAlchemy Session.
 
-        Adds add_dataframe() method to session to parse a DataFrame into models.
+        Adds add_dataframe() method to session.
     """
     def add_dataframe(self, cls, dataframe, parse_index=False):
         """ Return a generator for SQLAlchemy models from a pandas.DataFrame.
@@ -51,7 +53,7 @@ class Session(sqlalchemy.orm.Session):
             Arguments:
                 cls         (class):            Target model for DataFrame
                 dataframe   (pandas.DataFrame): pandas.DataFrame to parse
-                parse_index (boolean):          parse the index as a model attribute
+                parse_index (boolean):          parse the index as a model attr
 
             Returns:
                 Generator of SQLAlchemy objects. """
@@ -66,5 +68,28 @@ class Session(sqlalchemy.orm.Session):
 
 
 def sessionmaker(class_=Session, query_cls=Query, **kwargs):
-    """ Override of sqlalchemy.orm.sessionmaker to use RedPanda Session/Query. """
-    return sqlalchemy.orm.sessionmaker(class_=class_, query_cls=query_cls, **kwargs)
+    """ Override of sqlalchemy.orm.sessionmaker to use
+        RedPanda Session/Query.
+    """
+    return sqlalchemy.orm.sessionmaker(
+        class_=class_, query_cls=query_cls, **kwargs)
+
+
+def within(self, index):
+    """ Like between() but takes a pandas index object.
+
+        Arguments:
+            index (Index): pandas index
+
+        Returns:
+            result of between() with the start/end being the ends of the index.
+    """
+    try:
+        start = index.min().start_time
+        end = index.max().end_time
+    except AttributeError:
+        start = index.min()
+        end = index.max()
+    return self.between(start, end)
+
+sqlalchemy.orm.attributes.InstrumentedAttribute.within = within
