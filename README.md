@@ -25,7 +25,8 @@ import redpanda
 engine = redpanda.create_engine("sqlite://")
 # => Engine(sqlite://)
 
-session = redpanda.Session(bind=engine)
+Session = redpanda.orm.sessionmaker(bind=engine)
+session = Session()
 # => <sqlalchemy.orm.session.Session>
 ```
 
