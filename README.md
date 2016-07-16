@@ -53,6 +53,13 @@ query = session.query(MyModel).filter_by(my_attr="my_val")
 query.frame(index_col="time")
 ```
 
+Additionally, a `within()` method is added to SQLAlchemy's InstrumentedAttribute class that accepts a pandas Index object:
+
+```python
+index = pandas.period_range("2016-11-01", "2016-11-30", freq="W")
+query = session.query(MyModel).filter(MyModel.timestamp.within(index))
+```
+
 
 ## More Examples
 
