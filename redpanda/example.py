@@ -7,14 +7,12 @@ import random_words
 import sqlalchemy.ext.declarative
 
 
-# pylint: disable=invalid-name
+# pylint: skip-file
 Base = sqlalchemy.ext.declarative.declarative_base()
 
 
-# pylint: disable=too-few-public-methods
 class Widget(Base):
     """ Declare an example model. """
-    # pylint: disable=invalid-name
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     timestamp = sqlalchemy.Column(sqlalchemy.DateTime)
     name = sqlalchemy.Column(sqlalchemy.String)
