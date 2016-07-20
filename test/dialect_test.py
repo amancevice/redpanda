@@ -48,7 +48,7 @@ def test_sqlite_date():
     statement.compile()
     dialect = "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"
     returned = redpanda.dialects.__dialects__[dialect](statement)
-    expected = "fizzer", 10, "2016-11-11 11:11:11"
+    expected = "fizzer", 10, "2016-11-11 11:11:11.000000"
     assert_equal(returned, expected)
 
 

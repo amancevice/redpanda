@@ -21,7 +21,7 @@ def _sqlite(stmt):
         for key in positiontup:
             # SQLite seems to dislike datetime
             if isinstance(args[key], datetime) or isinstance(args[key], date):
-                yield str(args[key])
+                yield args[key].strftime("%Y-%m-%d %H:%M:%S.%f")
             else:
                 yield args[key]
     return tuple(iterhelper(stmt.params, stmt.positiontup))
