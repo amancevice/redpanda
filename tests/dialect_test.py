@@ -73,7 +73,7 @@ def test_add():
         return "foo", "bar"
 
     redpanda.dialects.add(TestDialect, test_func)
-    dialect = "test.dialect_test.TestDialect"
+    dialect = "tests.dialect_test.TestDialect"
     returned = redpanda.dialects.__dialects__[dialect](None)
     expected = "foo", "bar"
     assert_equal(returned, expected)
