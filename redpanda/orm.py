@@ -14,13 +14,12 @@ class Query(sqlalchemy.orm.Query):
     """
     def __init__(self, entities, session=None, read_sql=None):
         super(Query, self).__init__(entities, session)
-        try:
-            self._read_sql = read_sql \
-                or sqlalchemy.util.to_list(entities)[0].__read_sql__
-        except AttributeError:
-            self._read_sql = read_sql or {}
-        except IndexError:
-            self._read_sql = read_sql or {}
+        if read_sql is None:
+            try:
+                read_sql = self._entity_zero().entity_zero.class_.__read_sql__
+            except (AttributeError, IndexError):
+                read_sql = {}
+        self._read_sql = read_sql
 
     def frame(self, **read_sql):
         """ Return RedPanda pandas.DataFrame instance. """
