@@ -3,6 +3,7 @@
 [![build](https://travis-ci.org/amancevice/redpanda.svg?branch=master)](https://travis-ci.org/amancevice/redpanda)
 [![codecov](https://codecov.io/gh/amancevice/redpanda/branch/master/graph/badge.svg)](https://codecov.io/gh/amancevice/redpanda)
 [![pypi](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
+[![python](https://img.shields.io/badge/python-2.7--3.5-blue.svg)](https://img.shields.io/badge/python-2.7--3.5-blue.svg)
 
 Two great tastes that taste great together.
 
