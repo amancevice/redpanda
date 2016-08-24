@@ -1,7 +1,6 @@
 """ Utils Tests. """
 
 import redpanda.utils
-from nose.tools import assert_equal
 
 
 def test_dictcombine():
@@ -9,4 +8,4 @@ def test_dictcombine():
     dict2 = {'foo': 'baz', 'fizz': 'buzz'}
     returned = redpanda.utils.dictcombine(dict1, dict2)
     expected = {'foo': 'baz', 'fizz': 'buzz', 'flip': 'flop'}
-    yield assert_equal, returned, expected
+    assert returned == expected

@@ -8,10 +8,8 @@ import mock
 import pandas
 import redpanda
 import sqlalchemy
-from nose.tools import assert_equal
-from nose.tools import assert_is_instance
-from nose.tools import raises
 from pandas.util.testing import assert_frame_equal
+from pytest import raises
 from redpanda.example import Widget, create_widgets
 
 
@@ -45,19 +43,19 @@ def test_query():
         "widgets.name AS widgets_name, widgets.kind AS widgets_kind, " \
         "widgets.units AS widgets_units \n" \
         "FROM widgets"
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_query_no_entities():
     returned = SESSION.query()._read_sql
     expected = {}
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_query_no_read_sql():
     returned = SESSION.query(NoReadSql)._read_sql
     expected = {}
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_frame_columns():
@@ -66,10 +64,10 @@ def test_frame_columns():
     assert (returned == expected).all()
 
 
-
-@raises(AttributeError)
 def test_query_frame_error():
-    redpanda.orm.Query(Widget).frame()
+    with raises(AttributeError, message="AttributeError") as err:
+        redpanda.orm.Query(Widget).frame()
+    assert "'NoneType' object has no attribute 'connection'" == str(err.value)
 
 
 def test_query_frame_no_error():
@@ -100,13 +98,13 @@ def test_read_sql_argument_override(mock_read_sql):
 def test_redpanda():
     returned = SESSION.query(Widget)
     expected = redpanda.orm.Query(Widget, session=SESSION)
-    assert_equal(str(returned), str(expected))
+    assert str(returned) == str(expected)
 
 
 def test_redpanda_with_query():
     returned = SESSION.query(Widget).filter(Widget.kind == "buzzer")
     expected = redpanda.orm.Query(Widget).filter(Widget.kind == "buzzer")
-    assert_equal(str(returned), str(expected))
+    assert str(returned) == str(expected)
 
 
 def test_add_dataframe():
@@ -133,7 +131,6 @@ def test_add_dataframe():
     assert_frame_equal(returned[cols], frame[cols], check_dtype=False)
 
 
-@raises(ValueError)
 def test_add_dataframe_exception():
     frame = pandas.DataFrame({
         datetime.utcnow(): {
@@ -144,7 +141,9 @@ def test_add_dataframe_exception():
             "name": "hoo", "kind": "bopper", "units": pandas.np.int64(12)}
     }).T
 
-    list(SESSION.add_dataframe(Widget, frame, parse_index=True))
+    with raises(ValueError, message="ValueError") as err:
+        list(SESSION.add_dataframe(Widget, frame, parse_index=True))
+    assert "Cannot parse unnamed index" == str(err.value)
 
 
 @mock.patch("sqlalchemy.orm.attributes.InstrumentedAttribute.between")

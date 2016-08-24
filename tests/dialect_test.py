@@ -5,7 +5,6 @@ from datetime import datetime
 import mock
 import redpanda
 import sqlalchemy
-from nose.tools import assert_equal
 from redpanda.example import Widget, create_widgets
 from sqlalchemy.dialects.mysql import mysqldb
 from sqlalchemy.dialects.postgresql import psycopg2
@@ -24,7 +23,7 @@ def test_default():
     statement.compile()
     returned = redpanda.dialects._default(statement)
     expected = {"kind_1": "fizzer", "units_1": 10}
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_sqlite():
@@ -36,7 +35,7 @@ def test_sqlite():
     dialect = "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = "fizzer", 10
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_sqlite_date():
@@ -49,7 +48,7 @@ def test_sqlite_date():
     dialect = "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite"
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = "fizzer", 10, "2016-11-11 11:11:11.000000"
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_mysql():
@@ -61,7 +60,7 @@ def test_mysql():
     dialect = "sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb"
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = "fizzer", 10
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 def test_add():
@@ -76,7 +75,7 @@ def test_add():
     dialect = "tests.dialect_test.TestDialect"
     returned = redpanda.dialects.__dialects__[dialect](None)
     expected = "foo", "bar"
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 @mock.patch("sqlalchemy.engine.base.Engine")
@@ -88,7 +87,7 @@ def test_params_mysql(mock_statement, mock_engine):
     mock_statement.positiontup = ("param1", "param2")
     returned = redpanda.dialects.params(mock_engine, mock_statement)
     expected = "val1", "val2"
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 @mock.patch("sqlalchemy.engine.base.Engine")
@@ -100,7 +99,7 @@ def test_params_sqlite(mock_statement, mock_engine):
     mock_statement.positiontup = ("param1", "param2")
     returned = redpanda.dialects.params(mock_engine, mock_statement)
     expected = "val1", "val2"
-    assert_equal(returned, expected)
+    assert returned == expected
 
 
 @mock.patch("sqlalchemy.engine.base.Engine")
@@ -111,4 +110,4 @@ def test_params_postgres(mock_statement, mock_engine):
     mock_statement.params = {"param1": "val1", "param2": "val2"}
     returned = redpanda.dialects.params(mock_engine, mock_statement)
     expected = {"param1": "val1", "param2": "val2"}
-    assert_equal(returned, expected)
+    assert returned == expected
