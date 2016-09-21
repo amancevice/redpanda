@@ -5,9 +5,9 @@ python:
 - '3.3'
 - '3.4'
 - '3.5'
-install: pip install . codecov mock nose pylint RandomWords
+install: pip install . codecov mock pytest pytest-cov pylint RandomWords
 script:
-- nosetests --with-coverage
+- py.test --cov redpanda
 - pylint redpanda
 after_success: codecov
 deploy:
