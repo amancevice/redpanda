@@ -20,7 +20,7 @@ def _sqlite(stmt):
         """ Helper for params. """
         for key in positiontup:
             # SQLite seems to dislike datetime
-            if isinstance(args[key], datetime) or isinstance(args[key], date):
+            if isinstance(args[key], (datetime, date)):
                 yield args[key].strftime('%Y-%m-%d %H:%M:%S.%f')
             else:
                 yield args[key]

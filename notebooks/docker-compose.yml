@@ -1,0 +1,16 @@
+version: '3'
+services:
+  python27:
+    build: python27
+    ports:
+      - 2700:2700
+    volumes:
+      - ./python27:/notebooks
+      - ../:/redpanda
+  python36:
+    build: python36
+    ports:
+      - 3600:3600
+    volumes:
+      - ./python36:/notebooks
+      - ../:/redpanda

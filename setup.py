@@ -1,3 +1,4 @@
+import textwrap
 from setuptools import setup
 
 setup(name='redpanda',
@@ -22,4 +23,4 @@ setup(name='redpanda',
                    'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
                    'Programming Language :: Python'],
-      install_requires=['pandas>=0.16.0', 'sqlalchemy>=1.0.0'])
+      install_requires=['pandas>=0.16.0', 'sqlalchemy>=1.1.10'])

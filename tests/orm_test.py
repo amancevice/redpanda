@@ -67,7 +67,7 @@ def test_frame_columns():
 def test_query_frame_error():
     with raises(AttributeError, message='AttributeError') as err:
         redpanda.orm.Query(Widget).frame()
-    assert ''NoneType' object has no attribute 'connection'' == str(err.value)
+    assert "'NoneType' object has no attribute 'connection'" == str(err.value)
 
 
 def test_query_frame_no_error():
@@ -104,7 +104,7 @@ def test_redpanda():
 def test_redpanda_with_query():
     returned = SESSION.query(Widget).filter(Widget.kind == 'buzzer')
     expected = redpanda.orm.Query(Widget).filter(Widget.kind == 'buzzer')
-    assert str(returned) == str(expected)
+    assert str(returned) == str(expected).replace(':kind_1', '?')
 
 
 def test_add_dataframe():
