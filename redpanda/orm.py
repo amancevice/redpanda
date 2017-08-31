@@ -32,12 +32,12 @@ class Query(sqlalchemy.orm.Query):
 
         # Get read_sql arguments
         read_sql = utils.dictcombine(
-            self._read_sql, {"params": params}, read_sql)
+            self._read_sql, {'params': params}, read_sql)
 
         # Read SQL into DataFrame
         dataframe = pandas.read_sql(str(sql), conn.engine, **read_sql)
-        if read_sql.get("columns") is not None:
-            dataframe = dataframe[read_sql["columns"]]
+        if read_sql.get('columns') is not None:
+            dataframe = dataframe[read_sql['columns']]
         return dataframe
 
 
@@ -61,7 +61,7 @@ class Session(sqlalchemy.orm.Session):
             attrs = row.dropna().to_dict()
             if parse_index is True:
                 if dataframe.index.name is None:
-                    raise ValueError("Cannot parse unnamed index")
+                    raise ValueError('Cannot parse unnamed index')
                 attrs[dataframe.index.name] = idx
             self.add(cls(**attrs))
 
@@ -90,5 +90,6 @@ def within(self, index):
         start = index.min()
         end = index.max()
     return self.between(start, end)
+
 
 sqlalchemy.orm.attributes.InstrumentedAttribute.within = within

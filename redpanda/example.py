@@ -18,8 +18,8 @@ class Widget(Base):
     name = sqlalchemy.Column(sqlalchemy.String)
     kind = sqlalchemy.Column(sqlalchemy.String)
     units = sqlalchemy.Column(sqlalchemy.Integer)
-    __read_sql__ = {"index_col": ["timestamp"], "parse_dates": ["timestamp"]}
-    __tablename__ = "widgets"
+    __read_sql__ = {'index_col': ['timestamp'], 'parse_dates': ['timestamp']}
+    __tablename__ = 'widgets'
 
 
 def randtime(maxday=31):
@@ -31,13 +31,13 @@ def randtime(maxday=31):
     try:
         return datetime(2016, month, day, hour, minute)
     except ValueError:
-        return randtime(maxday-1)
+        return randtime(maxday - 1)
 
 
 def widgetgen(maxiter=25):
     """ Generate a set of widgets. """
     wordgen = random_words.RandomWords()
-    kinds = "fizzer", "buzzer", "bopper"
+    kinds = 'fizzer', 'buzzer', 'bopper'
     for kind in kinds * maxiter:
         name = wordgen.random_word()
         units = random.randint(0, 100)

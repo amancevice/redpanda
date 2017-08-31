@@ -21,15 +21,15 @@ def _sqlite(stmt):
         for key in positiontup:
             # SQLite seems to dislike datetime
             if isinstance(args[key], datetime) or isinstance(args[key], date):
-                yield args[key].strftime("%Y-%m-%d %H:%M:%S.%f")
+                yield args[key].strftime('%Y-%m-%d %H:%M:%S.%f')
             else:
                 yield args[key]
     return tuple(iterhelper(stmt.params, stmt.positiontup))
 
 
 __dialects__ = {
-    "sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb": _mysql,
-    "sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite": _sqlite}
+    'sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb': _mysql,
+    'sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite': _sqlite}
 
 
 def add(dialect, func):
@@ -39,7 +39,7 @@ def add(dialect, func):
             dialect (class):   SQLAlchemy dialect class
             func    (lambda):  Function to process statement into params
     """
-    key = ".".join([dialect.__module__, dialect.__name__])
+    key = '.'.join([dialect.__module__, dialect.__name__])
     __dialects__[key] = func
 
 
@@ -53,7 +53,7 @@ def params(engine, stmt):
         Returns:
             Parameters in engine-specific format. """
     dialect = type(engine.dialect)
-    key = ".".join([dialect.__module__, dialect.__name__])
+    key = '.'.join([dialect.__module__, dialect.__name__])
     generator = __dialects__.get(key, _default)
     return generator(stmt) or None
 
