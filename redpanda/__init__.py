@@ -7,5 +7,5 @@ from .orm import sessionmaker
 
 try:
     __version__ = pkg_resources.get_distribution(__package__).version
-except pkg_resources.DistributionNotFound:
-    __version__ = None
+except pkg_resources.DistributionNotFound:  # pragma: no cover
+    __version__ = None                      # pragma: no cover
