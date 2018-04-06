@@ -58,3 +58,6 @@ target/
 
 # Jupyter
 .ipynb_checkpoints
+
+# py.test
+.pytest_cache/

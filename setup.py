@@ -1,4 +1,3 @@
-import textwrap
 from setuptools import setup
 
 setup(name='redpanda',
@@ -8,19 +7,15 @@ setup(name='redpanda',
       packages=['redpanda'],
       url='http://www.smallweirdnumber.com',
       description='Pandas-ORM Integration.',
-      long_description=textwrap.dedent(
-          '''See GitHub_ for documentation.
-          .. _GitHub: https://github.com/amancevice/redpanda'''),
-      classifiers=['Development Status :: 3 - Alpha',
-                   'Intended Audience :: Developers',
+      long_description='See GitHub_ for documentation.'
+                       '.. _GitHub: https://github.com/amancevice/redpanda',
+      classifiers=['Intended Audience :: Developers',
                    'License :: OSI Approved :: MIT License',
                    'Operating System :: OS Independent',
-                   'Topic :: Utilities',
                    'Programming Language :: Python :: 2',
                    'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3',
-                   'Programming Language :: Python :: 3.4',
-                   'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
-                   'Programming Language :: Python'],
-      install_requires=['pandas>=0.16.0', 'sqlalchemy>=1.1.10'])
+                   'Programming Language :: Python',
+                   'Topic :: Utilities'],
+      install_requires=['pandas >= 0.16.0', 'sqlalchemy >= 1.1.10'])
