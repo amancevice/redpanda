@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='redpanda',
-      version='0.4.0',
+      use_scm_version=True,
       author='amancevice',
       author_email='smallweirdnum@gmail.com',
       packages=['redpanda'],
@@ -18,4 +18,5 @@ setup(name='redpanda',
                    'Programming Language :: Python :: 3.6',
                    'Programming Language :: Python',
                    'Topic :: Utilities'],
+      setup_requires=['setuptools_scm'],
       install_requires=['pandas >= 0.16.0', 'sqlalchemy >= 1.1.10'])
