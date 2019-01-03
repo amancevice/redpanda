@@ -66,7 +66,7 @@ query = session.query(MyModel).filter(MyModel.timestamp.within(index))
 
 ## More Examples
 
-See the IPython Notebooks in the [`notebooks`](./notebooks) directory for examples using [`Python 2.7`](./notebooks/python27/notebook.ipynb) and [`Python 3.5`](./notebooks/python35/notebook.ipynb)
+See the IPython Notebooks in the [`notebooks`](./notebooks) directory for examples.
 
 Additionally, if you have `docker-compose` installed you may view these notebooks directly by cloning this repo and starting the containers:
 
@@ -76,4 +76,4 @@ cd redpanda
 docker-compose up
 ```
 
-Navigate to [http://localhost:2700](http://localhost:2700/tree) to view the `Python 2.7` notebook, or [http://localhost:3500](http://localhost:3500/tree) for `Python 3.5`.
+Navigate to [http://localhost:8888](http://localhost:8888/tree) to view the notebook.
