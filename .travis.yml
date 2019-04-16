@@ -2,13 +2,15 @@ language: python
 python:
 - '3.6'
 - 3.7-dev
-install: pip install -r requirements.txt -r requirements-dev.txt
+install:
+- pip install -r requirements.txt -r requirements-dev.txt
 script:
 - flake8
 - py.test
-after_success: codecov
+after_success:
+- codecov
 deploy:
-  provider: pypi
+- provider: pypi
   user: amancevice
   password:
     secure: OR+02EZH+cEGjftj8yc2sE8zfbJj9BaOBiCsn9FEjZoFb3naGTqm/l+mYZERIMBtKt7bv5R+63+7aSlQ3UZcDgwp9JZzz+Jag25VbANNxCGyjWc4Ff5VxNLc06PnglZf9IFUuiM3OFx0gHT3Eo5X0DHN3zCucvofha/uK02yYJwj3zwU7u/QsP+gi0p6Sf+SxBaGM1OuDL1yhnE8qtB92zA1OQXh10wLYYkHbNk0q6DQPn7+7STziH1HzQ0TEexIFt3eaJIUlvi9/TWx+66+pi4OWqKQVCzHeGwhT6JirsNmoSutC7spBWq09RK2+oNyvL+X0KAvsJO7KZrXZdFNJCDWH+MrOC4Uy8NJBv9CHhFLpWufurFGFrYt4k+dwDyE64uShex+NE8nggPdgVYy8BNpX5QekebJSR9OeBUxa4aJpL7Z/MJ5idPi+Vqsrp92Ja8PMiqzgOfwTxUTrUki1Ja00smsx68rzBKTwVhMm64vXf2VA1HbP5cFdx7cpMOscrM0Q+/oKhPFdgNGvqlP+n6lySRNjn5YbxfoHSj1zYGtlhantYwlR7CopQZRMMj74NaZe2zn+DMCF18AbviRAzv4eKcRddZz8Ry7ZHb8knzxBR6lZhdeDHK58czIFJcaXiZypC49fBDvxp9abcX3njxLXV9TkTfh/XUKhkF3VaM=
