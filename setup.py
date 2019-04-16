@@ -24,7 +24,7 @@ setup(
     description='Pandas-ORM Integration.',
     install_requires=requirements('requirements.txt'),
     name='redpanda',
-    packages=find_packages(exclude='tests'),
+    packages=find_packages(exclude=['tests']),
     setup_requires=['setuptools_scm'],
     url='https://github.com/amancevice/redpanda',
     use_scm_version=True,
