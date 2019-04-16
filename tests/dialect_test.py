@@ -1,13 +1,12 @@
 """ Test for dialect module. """
-
 from datetime import datetime
+from unittest import mock
 
-import mock
 import redpanda
 import sqlalchemy
 from redpanda.example import Widget, create_widgets
-from sqlalchemy.dialects.mysql import mysqldb
-from sqlalchemy.dialects.postgresql import psycopg2
+from sqlalchemy.dialects.mysql import mysqldb        # noqa: F401
+from sqlalchemy.dialects.postgresql import psycopg2  # noqa: F401
 
 
 ENGINE = redpanda.create_engine('sqlite://')
@@ -20,7 +19,6 @@ def test_default():
         .filter(Widget.kind == 'fizzer')\
         .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
-    statement.compile()
     returned = redpanda.dialects._default(statement)
     expected = {'kind_1': 'fizzer', 'units_1': 10}
     assert returned == expected
@@ -31,7 +29,6 @@ def test_sqlite():
         .filter(Widget.kind == 'fizzer')\
         .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
-    statement.compile()
     dialect = 'sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite'
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = 'fizzer', 10
@@ -44,7 +41,6 @@ def test_sqlite_date():
         .filter(Widget.units > 10)\
         .filter(Widget.timestamp == datetime(2016, 11, 11, 11, 11, 11))
     statement = query.statement.compile(SESSION.bind)
-    statement.compile()
     dialect = 'sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite'
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = 'fizzer', 10, '2016-11-11 11:11:11.000000'
@@ -56,7 +52,6 @@ def test_mysql():
         .filter(Widget.kind == 'fizzer')\
         .filter(Widget.units > 10)
     statement = query.statement.compile(SESSION.bind)
-    statement.compile()
     dialect = 'sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb'
     returned = redpanda.dialects.__dialects__[dialect](statement)
     expected = 'fizzer', 10

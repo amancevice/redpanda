@@ -1,10 +1,8 @@
 """ Test for mixins module. """
-
-
 from datetime import datetime
 from copy import copy
+from unittest import mock
 
-import mock
 import pandas
 import redpanda
 import sqlalchemy
@@ -65,7 +63,7 @@ def test_frame_columns():
 
 
 def test_query_frame_error():
-    with raises(AttributeError, message='AttributeError') as err:
+    with raises(AttributeError) as err:
         redpanda.orm.Query(Widget).frame()
     assert "'NoneType' object has no attribute 'connection'" == str(err.value)
 
@@ -120,7 +118,7 @@ def test_add_dataframe():
     }).T
     frame.index.name = 'timestamp'
 
-    engine = redpanda.create_engine('sqlite://', convert_unicode=True)
+    engine = redpanda.create_engine('sqlite://')
     Widget.metadata.create_all(engine)
     session = redpanda.orm.sessionmaker(bind=engine)()
     session.add_dataframe(Widget, frame, parse_index=True)
@@ -141,7 +139,7 @@ def test_add_dataframe_exception():
             'name': 'hoo', 'kind': 'bopper', 'units': pandas.np.int64(12)}
     }).T
 
-    with raises(ValueError, message='ValueError') as err:
+    with raises(ValueError) as err:
         list(SESSION.add_dataframe(Widget, frame, parse_index=True))
     assert 'Cannot parse unnamed index' == str(err.value)
 

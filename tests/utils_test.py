@@ -1,5 +1,4 @@
 """ Utils Tests. """
-
 import redpanda.utils
 
 

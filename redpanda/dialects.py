@@ -1,5 +1,4 @@
 """ Dialect parameter generators. """
-
 from datetime import date
 from datetime import datetime
 
@@ -68,7 +67,6 @@ def statement(engine, query):
         Returns:
             Compiled engine-specific statement. """
     stmt = query.statement.compile(engine)
-    stmt.compile()
     return stmt
 
 

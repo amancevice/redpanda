@@ -1,6 +1,4 @@
 """ Custom ORM behavior. """
-
-
 import pandas
 import sqlalchemy.orm
 from . import dialects
