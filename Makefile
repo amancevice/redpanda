@@ -1,10 +1,8 @@
-.PHONY: all clean
-
-all: Pipfile.lock
+.PHONY: clean
 
 Pipfile.lock: Pipfile
 	pipenv lock -r
 
 clean:
-	pipenv --rm
-	rm Pipfile.lock
+	-pipenv --rm
+	-rm Pipfile.lock
