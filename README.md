@@ -62,18 +62,3 @@ Additionally, a `within()` method is added to SQLAlchemy's InstrumentedAttribute
 index = pandas.period_range("2016-11-01", "2016-11-30", freq="W")
 query = session.query(MyModel).filter(MyModel.timestamp.within(index))
 ```
-
-
-## More Examples
-
-See the IPython Notebooks in the [`notebooks`](./notebooks) directory for examples.
-
-Additionally, if you have `docker-compose` installed you may view these notebooks directly by cloning this repo and starting the containers:
-
-```bash
-git clone git@github.com:amancevice/redpanda.git
-cd redpanda
-docker-compose up
-```
-
-Navigate to [http://localhost:8888](http://localhost:8888/tree) to view the notebook.
