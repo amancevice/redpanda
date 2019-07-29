@@ -1,8 +1,9 @@
 # RedPanda: Pandas & SQLAlchemy
 
-[![build](https://travis-ci.com/amancevice/redpanda.svg?branch=master)](https://travis-ci.com/amancevice/redpanda)
-[![codecov](https://codecov.io/gh/amancevice/redpanda/branch/master/graph/badge.svg)](https://codecov.io/gh/amancevice/redpanda)
-[![pypi](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
+[![Build Status](https://travis-ci.com/amancevice/redpanda.svg?branch=master)](https://travis-ci.com/amancevice/redpanda)
+[![PyPI Version](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/test_coverage)](https://codeclimate.com/github/amancevice/redpanda/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/maintainability)](https://codeclimate.com/github/amancevice/redpanda/maintainability)
 
 Two great tastes that taste great together.
 
