@@ -27,9 +27,9 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
         command: before-build
-    - run: pip install pipenv
-    - run: pipenv install --dev
-    - run: pipenv run py.test
+    - run: pip install . flake8 pytest pytest-cov randomwords
+    - run: flake8
+    - run: py.test
     - name: Send coverage report
       uses: amancevice/code-climate-action@v0
       env:
