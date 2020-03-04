@@ -3,10 +3,11 @@ from datetime import datetime
 from copy import copy
 from unittest import mock
 
+import numpy
 import pandas
 import redpanda
 import sqlalchemy
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 from pytest import raises
 from redpanda.example import Widget, create_widgets
 
@@ -114,7 +115,7 @@ def test_add_dataframe():
         datetime.utcnow(): {
             'id': 3, 'name': 'hoo', 'kind': 'bopper', 'units': 12},
         datetime.utcnow(): {
-            'id': 4, 'name': 'ioo', 'kind': 'fopper', 'units': pandas.np.nan}
+            'id': 4, 'name': 'ioo', 'kind': 'fopper', 'units': numpy.nan}
     }).T
     frame.index.name = 'timestamp'
 
@@ -132,11 +133,11 @@ def test_add_dataframe():
 def test_add_dataframe_exception():
     frame = pandas.DataFrame({
         datetime.utcnow(): {
-            'name': 'foo', 'kind': 'fizzer', 'units': pandas.np.int64(10)},
+            'name': 'foo', 'kind': 'fizzer', 'units': numpy.int64(10)},
         datetime.utcnow(): {
-            'name': 'goo', 'kind': 'buzzer', 'units': pandas.np.int64(11)},
+            'name': 'goo', 'kind': 'buzzer', 'units': numpy.int64(11)},
         datetime.utcnow(): {
-            'name': 'hoo', 'kind': 'bopper', 'units': pandas.np.int64(12)}
+            'name': 'hoo', 'kind': 'bopper', 'units': numpy.int64(12)}
     }).T
 
     with raises(ValueError) as err:
