@@ -1,6 +1,6 @@
 # RedPanda: Pandas & SQLAlchemy
 
-[![Build Status](https://travis-ci.com/amancevice/redpanda.svg?branch=master)](https://travis-ci.com/amancevice/redpanda)
+[![py.test](https://github.com/amancevice/redpanda/workflows/py.test/badge.svg)](https://github.com/amancevice/redpanda/actions)
 [![PyPI Version](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/test_coverage)](https://codeclimate.com/github/amancevice/redpanda/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/maintainability)](https://codeclimate.com/github/amancevice/redpanda/maintainability)
