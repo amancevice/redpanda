@@ -4,9 +4,9 @@ on:
   pull_request:
   push:
     branches:
-    - master
+      - master
   schedule:
-  - cron: "11 21 * * *"
+    - cron: "11 21 * * *"
 
 jobs:
   pytest:
@@ -14,10 +14,10 @@ jobs:
     strategy:
       matrix:
         python-version:
-        - 3.5
-        - 3.6
-        - 3.7
-        - 3.8
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
 
     steps:
 
