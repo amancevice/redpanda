@@ -10,6 +10,7 @@ ipython = "*"
 pytest = "*"
 pytest-cov = "*"
 randomwords = "*"
+twine = "*"
 
 [packages]
 pandas = "*"
