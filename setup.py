@@ -16,6 +16,7 @@ setup(
     long_description_content_type='text/markdown',
     name='redpanda',
     packages=find_packages(exclude=['tests']),
+    python_requires='>= 3.5',
     setup_requires=['setuptools_scm'],
     tests_require=[
         'flake8',
