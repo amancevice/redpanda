@@ -1,9 +1,10 @@
 # RedPanda: Pandas & SQLAlchemy
 
-[![py.test](https://github.com/amancevice/redpanda/workflows/py.test/badge.svg)](https://github.com/amancevice/redpanda/actions)
-[![PyPI Version](https://badge.fury.io/py/redpanda.svg)](https://badge.fury.io/py/redpanda)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/test_coverage)](https://codeclimate.com/github/amancevice/redpanda/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f64c85eb96cfa2427153/maintainability)](https://codeclimate.com/github/amancevice/redpanda/maintainability)
+![pypi](https://img.shields.io/pypi/v/redpanda?color=yellow&logo=python&logoColor=eee&style=flat-square)
+![python](https://img.shields.io/pypi/pyversions/redpanda?logo=python&logoColor=eee&style=flat-square)
+[![pytest](https://img.shields.io/github/workflow/status/amancevice/redpanda/pytest?logo=github&style=flat-square)](https://github.com/amancevice/redpanda/actions)
+[![coverage](https://img.shields.io/codeclimate/coverage/amancevice/redpanda?logo=code-climate&style=flat-square)](https://codeclimate.com/github/amancevice/redpanda/test_coverage)
+[![maintainability](https://img.shields.io/codeclimate/maintainability/amancevice/redpanda?logo=code-climate&style=flat-square)](https://codeclimate.com/github/amancevice/redpanda/maintainability)
 
 Two great tastes that taste great together.
 
