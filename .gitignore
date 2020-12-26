@@ -61,3 +61,6 @@ target/
 
 # py.test
 .pytest_cache/
+
+# Pipenv
+.venv/
