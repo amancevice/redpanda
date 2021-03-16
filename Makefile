@@ -7,7 +7,7 @@ clean:
 	rm -rf dist
 
 upload: $(SDIST)
-	twine upload $<
+	pipenv run twine upload $<
 
 .PHONY: all clean upload
 
