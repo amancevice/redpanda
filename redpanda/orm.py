@@ -17,8 +17,9 @@ class Query(sqlalchemy.orm.Query):
         super(Query, self).__init__(entities, session)
         if read_sql is None:
             try:
-                read_sql = self._entity_zero().entity.__read_sql__
-            except (AttributeError, IndexError):
+                entity_zero, *_ = entities
+                read_sql = entity_zero.__read_sql__
+            except (AttributeError, TypeError, ValueError):
                 read_sql = {}
         self._read_sql = read_sql
 
