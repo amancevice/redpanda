@@ -1,4 +1,6 @@
-""" Dialect parameter generators. """
+"""
+Dialect parameter generators.
+"""
 from datetime import date
 from datetime import datetime
 
@@ -28,7 +30,8 @@ def _sqlite(stmt):
 
 __dialects__ = {
     'sqlalchemy.dialects.mysql.mysqldb.MySQLDialect_mysqldb': _mysql,
-    'sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite': _sqlite}
+    'sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite': _sqlite,
+}
 
 
 def add(dialect, func):

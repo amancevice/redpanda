@@ -1,4 +1,6 @@
-""" Example Model Setup """
+"""
+Example Model Setup.
+"""
 import random
 from datetime import datetime
 
@@ -6,7 +8,6 @@ import random_words
 import sqlalchemy.ext.declarative
 
 
-# pylint: skip-file
 Base = sqlalchemy.ext.declarative.declarative_base()
 
 

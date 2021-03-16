@@ -1,4 +1,6 @@
-""" Test for mixins module. """
+"""
+Tests for orm module.
+"""
 from datetime import datetime
 from copy import copy
 from unittest import mock
@@ -17,13 +19,17 @@ SESSION = redpanda.orm.sessionmaker(bind=ENGINE)()
 
 
 class NoReadSql(redpanda.example.Base):
-    """ Declare an example model. """
+    """
+    Declare an example model.
+    """
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     __tablename__ = 'no_read_sql'
 
 
 class HasColumns(redpanda.example.Base):
-    """ Declare an example model. """
+    """
+    Declare an example model.
+    """
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     name = sqlalchemy.Column(sqlalchemy.String)
     fizz = sqlalchemy.Column(sqlalchemy.Integer)

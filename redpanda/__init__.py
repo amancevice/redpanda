@@ -1,11 +1,6 @@
-""" Pandas-ORM Integration. """
-import pkg_resources
+"""
+Pandas-ORM Integration.
+"""
 from sqlalchemy import create_engine  # noqa: F401
-from .orm import Query                # noqa: F401
-from .orm import Session              # noqa: F401
-from .orm import sessionmaker         # noqa: F401
-
-try:
-    __version__ = pkg_resources.get_distribution(__package__).version
-except pkg_resources.DistributionNotFound:  # pragma: no cover
-    __version__ = None                      # pragma: no cover
+from redpanda.__version__ import __version__  # noqa: F401
+from redpanda.orm import (Query, Session, sessionmaker)  # noqa: F401
