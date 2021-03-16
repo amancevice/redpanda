@@ -126,7 +126,7 @@ def test_add_dataframe():
     session.commit()
 
     returned = session.query(Widget).frame()
-    cols = sorted(returned.columns | frame.columns)
+    cols = sorted(returned.columns.union(frame.columns))
     assert_frame_equal(returned[cols], frame[cols], check_dtype=False)
 
 
