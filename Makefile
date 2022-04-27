@@ -1,22 +1,27 @@
 PYFILES := $(shell find redpanda tests -name '*.py')
-SDIST   := dist/$(shell python setup.py --fullname).tar.gz
+SDIST   := dist/$(shell python setup.py --fullname 2> /dev/null).tar.gz
 
-all: $(SDIST)
+all: test
+
+build: $(SDIST)
 
 clean:
 	rm -rf dist
 
-upload: Brewfile.lock.json $(SDIST)
-	pipenv run twine upload $(SDIST)
+test: | .venv
+	pipenv run pytest
 
-.PHONY: all clean upload
+upload: $(SDIST)
+	git diff HEAD --quiet
+	pipenv run twine upload $<
 
-$(SDIST): $(PYFILES) Pipfile.lock
+.PHONY: all build clean test upload
+
+$(SDIST): $(PYFILES) | .venv
 	pipenv run pytest
 	python setup.py sdist
 
-Brewfile.lock.json: Brewfile
-	brew bundle
-
-Pipfile.lock: Pipfile
+.venv: Pipfile
+	mkdir -p .venv
 	pipenv install --dev
+	touch .venv
