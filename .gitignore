@@ -66,3 +66,4 @@ target/
 .venv/
 
 Brewfile.lock.json
+Pipfile.lock
