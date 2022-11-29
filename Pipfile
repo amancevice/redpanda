@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+black = "*"
+flit = "*"
 ipdb = "*"
 ipython = "*"
 pytest = "*"
 pytest-cov = "*"
-pytest-flake8 = "*"
 randomwords = "*"
-twine = "*"
 
 [packages]
 pandas = "*"
