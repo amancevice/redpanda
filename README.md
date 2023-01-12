@@ -2,7 +2,7 @@
 
 ![pypi](https://img.shields.io/pypi/v/redpanda?color=yellow&logo=python&logoColor=eee&style=flat-square)
 ![python](https://img.shields.io/pypi/pyversions/redpanda?logo=python&logoColor=eee&style=flat-square)
-[![pytest](https://img.shields.io/github/workflow/status/amancevice/redpanda/pytest?logo=github&style=flat-square)](https://github.com/amancevice/redpanda/actions)
+[![pytest](https://img.shields.io/github/actions/workflow/status/amancevice/redpanda/pytest.yml?logo=github&style=flat-square)](https://github.com/amancevice/redpanda/actions/workflows/pytest.yml)
 [![coverage](https://img.shields.io/codeclimate/coverage/amancevice/redpanda?logo=code-climate&style=flat-square)](https://codeclimate.com/github/amancevice/redpanda/test_coverage)
 [![maintainability](https://img.shields.io/codeclimate/maintainability/amancevice/redpanda?logo=code-climate&style=flat-square)](https://codeclimate.com/github/amancevice/redpanda/maintainability)
 
@@ -10,13 +10,11 @@ Two great tastes that taste great together.
 
 Use RedPanda to add simple pandas integration into your declarative models.
 
-
 ## Installation
 
 ```bash
 pip install redpanda
 ```
-
 
 ## Basic Use
 
@@ -33,7 +31,6 @@ session = Session()
 # => <sqlalchemy.orm.session.Session>
 ```
 
-
 ## Querying
 
 Use the `frame()` method of RedPanda queries to return a DataFrame representation of the results instead of a collection of models.
@@ -45,7 +42,6 @@ query = session.query(MyModel)
 query.frame()
 # => <pandas.DataFrame>
 ```
-
 
 ### Querying with Filters
 
