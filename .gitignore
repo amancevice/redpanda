@@ -67,3 +67,4 @@ target/
 
 Brewfile.lock.json
 Pipfile.lock
+.python-version
