@@ -1,6 +1,7 @@
 """
 Tests for dialect module.
 """
+
 from datetime import datetime
 from unittest import mock
 

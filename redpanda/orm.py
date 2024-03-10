@@ -1,6 +1,7 @@
 """
 Custom ORM behavior.
 """
+
 import pandas
 import sqlalchemy.orm
 

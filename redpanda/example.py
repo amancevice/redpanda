@@ -1,6 +1,7 @@
 """
 Example Model Setup.
 """
+
 import random
 from datetime import datetime
 
