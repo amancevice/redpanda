@@ -14,7 +14,7 @@ publish: test build
 	pipenv run flit publish
 
 test: .venv
-	pipenv run black --check redpanda tests
+	pipenv run ruff check redpanda tests
 	pipenv run pytest
 
 .PHONY: all build clean ipython publish test
