@@ -9,7 +9,7 @@ import random_words
 import sqlalchemy.ext.declarative
 
 
-Base = sqlalchemy.ext.declarative.declarative_base()
+Base = sqlalchemy.orm.declarative_base()
 
 
 class Widget(Base):

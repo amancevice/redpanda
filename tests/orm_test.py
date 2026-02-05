@@ -2,7 +2,7 @@
 Tests for orm module.
 """
 
-from datetime import datetime
+from datetime import (datetime, UTC)
 from copy import copy
 from unittest import mock
 
@@ -124,10 +124,10 @@ def test_redpanda_with_query():
 def test_add_dataframe():
     frame = pandas.DataFrame(
         {
-            datetime.utcnow(): {"id": 1, "name": "foo", "kind": "fizzer", "units": 10},
-            datetime.utcnow(): {"id": 2, "name": "goo", "kind": "buzzer", "units": 11},
-            datetime.utcnow(): {"id": 3, "name": "hoo", "kind": "bopper", "units": 12},
-            datetime.utcnow(): {
+            datetime.now(): {"id": 1, "name": "foo", "kind": "fizzer", "units": 10},
+            datetime.now(): {"id": 2, "name": "goo", "kind": "buzzer", "units": 11},
+            datetime.now(): {"id": 3, "name": "hoo", "kind": "bopper", "units": 12},
+            datetime.now(): {
                 "id": 4,
                 "name": "ioo",
                 "kind": "fopper",
@@ -151,17 +151,17 @@ def test_add_dataframe():
 def test_add_dataframe_exception():
     frame = pandas.DataFrame(
         {
-            datetime.utcnow(): {
+            datetime.now(UTC): {
                 "name": "foo",
                 "kind": "fizzer",
                 "units": numpy.int64(10),
             },
-            datetime.utcnow(): {
+            datetime.now(UTC): {
                 "name": "goo",
                 "kind": "buzzer",
                 "units": numpy.int64(11),
             },
-            datetime.utcnow(): {
+            datetime.now(UTC): {
                 "name": "hoo",
                 "kind": "bopper",
                 "units": numpy.int64(12),
@@ -180,7 +180,7 @@ def test_within_period_range_d(mock_between):
     Widget.timestamp.within(index)
     mock_between.assert_called_once_with(
         pandas.Timestamp("2016-01-01 00:00:00"),
-        pandas.Timestamp("2016-12-31 23:59:59.999999999"),
+        pandas.Timestamp("2016-12-31 23:59:59.999999"),
     )
 
 
@@ -190,7 +190,7 @@ def test_within_period_range_b(mock_between):
     Widget.timestamp.within(index)
     mock_between.assert_called_once_with(
         pandas.Timestamp("2016-07-15 00:00:00"),
-        pandas.Timestamp("2016-07-18 23:59:59.999999999"),
+        pandas.Timestamp("2016-07-18 23:59:59.999999"),
     )
 
 
@@ -200,7 +200,7 @@ def test_within_period_range_w(mock_between):
     Widget.timestamp.within(index)
     mock_between.assert_called_once_with(
         pandas.Timestamp("2016-07-11 00:00:00"),
-        pandas.Timestamp("2016-07-17 23:59:59.999999999"),
+        pandas.Timestamp("2016-07-17 23:59:59.999999"),
     )
 
 
